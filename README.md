@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ResourceHive
+
+ResourceHive is a Next.js community resource directory for finding local support services. It includes searchable resource cards, detail pages, map-based discovery, saved resources, demo dashboard flows, admin editing, and spreadsheet import tooling.
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Framer Motion
+- Prisma schema for PostgreSQL
+- JSON-backed local resource store
+- Spreadsheet imports with `xlsx`
+
+## Features
+
+- Browse and search community resources by keyword, category, city, and need.
+- View clean resource cards with available description, location, phone, email, and contact information.
+- Open detailed resource pages with map previews and related resources.
+- Import and merge resources from `Resource List.xlsx`.
+- Upload spreadsheets through the admin page.
+- Manage resources with local JSON persistence.
+- Use demo saved-resource and recent-view dashboard flows.
+- Switch between English and Spanish UI text.
+
+## Routes
+
+- `/`
+- `/about`
+- `/resources`
+- `/resource/[id]`
+- `/resources/[id]`
+- `/map`
+- `/contact`
+- `/faq`
+- `/dashboard`
+- `/admin`
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Generate the Prisma client:
+
+```bash
+npm run prisma:generate
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Spreadsheet Import
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The import script reads:
 
-## Learn More
+```text
+C:/Users/Adhit/Downloads/Resource List.xlsx
+```
 
-To learn more about Next.js, take a look at the following resources:
+It uses the `Resource List` worksheet and merges rows into:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+src/data/resources.json
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run:
 
-## Deploy on Vercel
+```bash
+npm run import:sheet
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The importer cleans blank values, normalizes state labels like `Texas` to `TX`, detects phone numbers placed in the email column, and avoids saving placeholder contact/location text.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validation
+
+Run lint:
+
+```bash
+npm run lint
+```
+
+Run a production build:
+
+```bash
+npm run build
+```
+
+If OneDrive locks `.next` during local builds, use:
+
+```bash
+$env:NEXT_DIST_DIR=".next-build"; npm run build
+```
+
+## Data Notes
+
+Resource data is stored locally in `src/data/resources.json`. The Prisma schema in `prisma/schema.prisma` is ready for moving persistence to PostgreSQL later.
