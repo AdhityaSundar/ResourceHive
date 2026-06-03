@@ -1,123 +1,25 @@
-import type { Prisma, Resource as ResourceRow } from "@prisma/client";
-
-import { prisma } from "@/lib/prisma";
-import { deriveNeeds, normalizeImportRows, normalizeResource } from "@/lib/resource-normalization";
+import { deriveNeeds } from "@/lib/resource-normalization";
+import * as jsonBackend from "@/lib/resource-store-json";
+import * as prismaBackend from "@/lib/resource-store-prisma";
 import { cleanText } from "@/lib/utils";
 import type {
   Resource,
-  ResourceImportRow,
-  ResourceImportSummary,
   ResourceSearchParams,
   ResourceSearchResult,
 } from "@/lib/types";
 
-// Map a database row to the app's Resource shape. Running it back through
-// normalizeResource restores derived fields (lat/lng aliases, defaults) so the
-// shape is identical to the previous JSON-backed store.
-function toResource(row: ResourceRow): Resource {
-  return normalizeResource({
-    ...row,
-    category: row.category as Resource["category"],
-    stateLocation: row.stateLocation ?? "",
-    email: row.email ?? "",
-    contactName: row.contactName ?? "",
-    resourceInformation: row.resourceInformation ?? "",
-    info: row.info ?? "",
-    sourceRef: row.sourceRef ?? "",
-    sourceType: row.sourceType as Resource["sourceType"],
-    updatedAt: row.updatedAt.toISOString(),
-  });
-}
+// Backend selection: use Supabase/Prisma when DATABASE_URL is configured;
+// otherwise fall back to the local JSON file so the app runs without a
+// database during design/development. PrismaClient construction is lazy, so
+// importing the unused backend is harmless.
+const backend = process.env.DATABASE_URL ? prismaBackend : jsonBackend;
 
-// Pick only the columns Prisma knows about (drops lat/lng aliases) and convert
-// updatedAt back to a Date for Postgres.
-function toPrismaData(resource: Resource): Prisma.ResourceCreateInput {
-  const normalized = normalizeResource(resource);
-  return {
-    id: normalized.id,
-    name: normalized.name,
-    category: normalized.category,
-    description: normalized.description,
-    services: normalized.services,
-    address: normalized.address,
-    city: normalized.city,
-    state: normalized.state,
-    zip: normalized.zip,
-    stateLocation: normalized.stateLocation ?? "",
-    phone: normalized.phone,
-    email: normalized.email ?? "",
-    contactName: normalized.contactName ?? "",
-    resourceInformation: normalized.resourceInformation ?? "",
-    info: normalized.info ?? "",
-    website: normalized.website,
-    hours: normalized.hours,
-    languages: normalized.languages,
-    tags: normalized.tags,
-    latitude: normalized.latitude,
-    longitude: normalized.longitude,
-    eligibility: normalized.eligibility,
-    sourceType: normalized.sourceType,
-    sourceRef: normalized.sourceRef ?? "",
-    updatedAt: new Date(normalized.updatedAt),
-  };
-}
-
-export async function getResources(): Promise<Resource[]> {
-  const rows = await prisma.resource.findMany({ orderBy: { updatedAt: "desc" } });
-  return rows.map(toResource);
-}
-
-export async function getResourceById(id: string) {
-  const row = await prisma.resource.findUnique({ where: { id } });
-  return row ? toResource(row) : null;
-}
-
-export async function saveResources(resources: Resource[]) {
-  const data = resources.map(toPrismaData);
-  // Replace the full set atomically to preserve the previous "save the whole
-  // array" contract.
-  await prisma.$transaction([
-    prisma.resource.deleteMany({}),
-    prisma.resource.createMany({ data }),
-  ]);
-}
-
-export async function upsertResource(resource: Resource) {
-  const data = toPrismaData(resource);
-  const row = await prisma.resource.upsert({
-    where: { id: data.id },
-    create: data,
-    update: data,
-  });
-  return toResource(row);
-}
-
-export async function deleteResource(id: string) {
-  await prisma.resource.deleteMany({ where: { id } });
-  return getResources();
-}
-
-export async function importResourcesFromRows(
-  rows: ResourceImportRow[],
-  sourceRef: string,
-): Promise<ResourceImportSummary> {
-  const summary = normalizeImportRows(rows, sourceRef);
-
-  if (summary.resources.length > 0) {
-    await prisma.$transaction(
-      summary.resources.map((resource) => {
-        const data = toPrismaData(resource);
-        return prisma.resource.upsert({
-          where: { id: data.id },
-          create: data,
-          update: data,
-        });
-      }),
-    );
-  }
-
-  return summary;
-}
+export const getResources = backend.getResources;
+export const getResourceById = backend.getResourceById;
+export const saveResources = backend.saveResources;
+export const upsertResource = backend.upsertResource;
+export const deleteResource = backend.deleteResource;
+export const importResourcesFromRows = backend.importResourcesFromRows;
 
 function matchesSearch(resource: Resource, params: ResourceSearchParams) {
   const query = params.query?.trim().toLowerCase() ?? "";
