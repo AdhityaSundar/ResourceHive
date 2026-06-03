@@ -21,7 +21,7 @@ function Headline({ id }: { id?: string }) {
   return (
     <h1
       id={id}
-      className="font-display text-[clamp(2.25rem,4.4vw,3.75rem)] font-bold leading-[1.04] tracking-tight text-white text-balance drop-shadow-[0_2px_24px_rgba(7,33,42,0.55)]"
+      className="font-display text-[clamp(2.5rem,4.8vw,4.25rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white text-balance drop-shadow-[0_2px_24px_rgba(7,33,42,0.55)]"
     >
       Find the <span className="text-honey-300">help</span> you need most.
     </h1>
@@ -69,19 +69,20 @@ function PinnedGlobeHero({ mode }: { mode: "full" | "lite" }) {
     offset: ["start start", "end end"],
   });
 
-  // Globe: shrinks a little and settles into the right half.
-  const globeScale = useTransform(scrollYProgress, [0, 1], [1, 0.72]);
-  const globeX = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  // Globe: shrinks a little and settles into the middle-right, vertically centered.
+  const globeScale = useTransform(scrollYProgress, [0, 1], [1, 0.7]);
+  const globeX = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
 
   // Headline block: travels in from the right and resolves on the left, always
   // in front of the globe and confined to the left half (never overlapping it).
   const textX = useTransform(scrollYProgress, [0, 0.9, 1], ["40vw", "0vw", "0vw"]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.25, 0.6], [0, 0.6, 1]);
 
-  // Bee: flies in from the top-right and circles down across the globe.
-  const beeLeft = useTransform(scrollYProgress, [0, 1], ["88%", "64%"]);
-  const beeTop = useTransform(scrollYProgress, [0, 1], ["8%", "62%"]);
-  const beeRotate = useTransform(scrollYProgress, [0, 1], [25, -10]);
+  // Bee: lives inside the globe layer (so it travels + scales WITH the globe all
+  // the way through), flying from the top-right to the bottom-left of the globe.
+  const beeLeft = useTransform(scrollYProgress, [0, 1], ["62%", "40%"]);
+  const beeTop = useTransform(scrollYProgress, [0, 1], ["26%", "70%"]);
+  const beeRotate = useTransform(scrollYProgress, [0, 1], [25, -12]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
@@ -100,21 +101,19 @@ function PinnedGlobeHero({ mode }: { mode: "full" | "lite" }) {
           <EmergencyBanner />
         </div>
 
-        {/* Globe (shrinks + settles right) */}
+        {/* Globe (shrinks + settles middle-right) with the bee riding along */}
         <motion.div
           style={{ scale: globeScale, x: globeX }}
           className="absolute inset-0 z-[1] origin-center"
         >
           <GlobeCanvas mode={mode} progress={scrollYProgress} />
-        </motion.div>
-
-        {/* Bee flies over the globe (its own layer so it stays crisp + visible) */}
-        <motion.div
-          aria-hidden="true"
-          style={{ left: beeLeft, top: beeTop, rotate: beeRotate }}
-          className="absolute z-[2] w-12 sm:w-16"
-        >
-          <Bee className="w-full animate-[float_2.6s_ease-in-out_infinite]" />
+          <motion.div
+            aria-hidden="true"
+            style={{ left: beeLeft, top: beeTop, rotate: beeRotate }}
+            className="absolute z-[2] w-16 sm:w-20"
+          >
+            <Bee className="w-full animate-[float_2.6s_ease-in-out_infinite]" />
+          </motion.div>
         </motion.div>
 
         {/* Headline block travels right -> left, confined to the left half */}
