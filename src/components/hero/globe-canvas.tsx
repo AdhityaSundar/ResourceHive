@@ -1,85 +1,85 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import type { MotionValue } from "framer-motion";
 import * as THREE from "three";
 
-import { latLngToVector3 } from "@/lib/geo";
+import { distanceKm, latLngToVector3, type GlobeMarker } from "@/lib/geo";
+
+export type UserPos = { lat: number; lng: number } | null;
 
 type GlobeCanvasProps = {
   mode: "full" | "lite";
+  markers: GlobeMarker[];
   progress: MotionValue<number>;
+  userPos: UserPos;
+  onSelectCity: (href: string) => void;
 };
 
 const SUN_DIRECTION = new THREE.Vector3(5, 3, 5);
 
-// A few regions that softly glow (warm amber) and rotate with the globe.
-const GLOW_REGIONS: Array<{ lat: number; lng: number; color: string; scale: number }> = [
-  { lat: 39, lng: -98, color: "#ffd27a", scale: 0.26 }, // North America
-  { lat: -14, lng: -55, color: "#ffb84d", scale: 0.22 }, // South America
-  { lat: 50, lng: 10, color: "#ffdf9a", scale: 0.2 }, // Europe
-  { lat: 6, lng: 21, color: "#ffc457", scale: 0.24 }, // Africa
-  { lat: 24, lng: 80, color: "#ffce6b", scale: 0.22 }, // South Asia
-  { lat: 36, lng: 113, color: "#ffd584", scale: 0.24 }, // East Asia
-  { lat: -25, lng: 134, color: "#ffbe5c", scale: 0.18 }, // Australia
-];
-
-function makeGlowTexture() {
-  const size = 128;
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
-  const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  gradient.addColorStop(0, "rgba(255,255,255,1)");
-  gradient.addColorStop(0.35, "rgba(255,255,255,0.55)");
-  gradient.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, size, size);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
-
-function GlowRegion({
-  position,
-  color,
-  scale,
-  phase,
-  texture,
+function Marker({
+  marker,
+  emphasized,
+  isUser,
+  onSelectCity,
 }: {
-  position: [number, number, number];
-  color: string;
-  scale: number;
-  phase: number;
-  texture: THREE.Texture;
+  marker: GlobeMarker;
+  emphasized: boolean;
+  isUser: boolean;
+  onSelectCity: (href: string) => void;
 }) {
   const ref = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  const position = useMemo(
+    () => latLngToVector3(marker.lat, marker.lng, 1.02),
+    [marker.lat, marker.lng],
+  );
+  const color = isUser ? "#0e7c86" : "#efa417";
 
   useFrame((state) => {
     if (!ref.current) return;
-    const material = ref.current.material as THREE.MeshBasicMaterial;
-    material.opacity = 0.4 + 0.32 * Math.sin(state.clock.elapsedTime * 1.4 + phase);
+    const t = state.clock.elapsedTime;
+    const base = emphasized || isUser ? 1.5 : 1;
+    ref.current.scale.setScalar(base * (1 + 0.2 * Math.sin(t * 3 + marker.lat)));
   });
 
   return (
-    <mesh
-      ref={ref}
-      position={position}
-      scale={scale}
-      onUpdate={(self) => self.lookAt(0, 0, 0)}
-    >
-      <circleGeometry args={[1, 32]} />
-      <meshBasicMaterial
-        map={texture}
-        color={color}
-        transparent
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-        side={THREE.DoubleSide}
-        toneMapped={false}
-      />
-    </mesh>
+    <group position={position}>
+      {/* soft glow halo */}
+      <mesh scale={emphasized || isUser ? 0.06 : 0.045}>
+        <sphereGeometry args={[1, 12, 12]} />
+        <meshBasicMaterial color={color} transparent opacity={0.18} depthWrite={false} />
+      </mesh>
+      <mesh
+        ref={ref}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelectCity(marker.href);
+        }}
+        onPointerOver={(event) => {
+          event.stopPropagation();
+          setHovered(true);
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={() => {
+          setHovered(false);
+          document.body.style.cursor = "auto";
+        }}
+      >
+        <sphereGeometry args={[0.02, 14, 14]} />
+        <meshBasicMaterial color={color} toneMapped={false} />
+      </mesh>
+      {hovered ? (
+        <Html center distanceFactor={6} style={{ pointerEvents: "none" }}>
+          <div className="-translate-y-8 whitespace-nowrap rounded-full border border-white/15 bg-[#07212a]/90 px-3 py-1 text-xs font-semibold text-white shadow-lg backdrop-blur">
+            {isUser ? "You are here" : `${marker.label} · ${marker.count} resources`}
+          </div>
+        </Html>
+      ) : null}
+    </group>
   );
 }
 
@@ -91,7 +91,7 @@ function Atmosphere() {
         side: THREE.BackSide,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-        uniforms: { uColor: { value: new THREE.Color("#f4be4e") } },
+        uniforms: { uColor: { value: new THREE.Color("#5fb8bc") } },
         vertexShader: `
           varying vec3 vNormal;
           void main() {
@@ -118,10 +118,11 @@ function Atmosphere() {
   );
 }
 
-function Earth({ mode, progress }: GlobeCanvasProps) {
+function Earth({ mode, markers, progress, userPos, onSelectCity }: GlobeCanvasProps) {
   const groupRef = useRef<THREE.Group>(null);
   const cloudRef = useRef<THREE.Mesh>(null);
   const prevProgress = useRef(0);
+  const centering = useRef(false);
 
   const [dayMap, normalMap, specMap, cloudMap] = useLoader(THREE.TextureLoader, [
     "/textures/earth_atmos_2048.jpg",
@@ -130,14 +131,22 @@ function Earth({ mode, progress }: GlobeCanvasProps) {
     "/textures/earth_clouds_1024.png",
   ]);
 
-  const glowTexture = useMemo(() => makeGlowTexture(), []);
-
   useEffect(() => {
     dayMap.colorSpace = THREE.SRGBColorSpace;
     dayMap.anisotropy = 4;
   }, [dayMap]);
 
   const segments = mode === "lite" ? 36 : 72;
+
+  const targetQuat = useMemo(() => {
+    if (!userPos) return null;
+    const dir = new THREE.Vector3(...latLngToVector3(userPos.lat, userPos.lng, 1)).normalize();
+    return new THREE.Quaternion().setFromUnitVectors(dir, new THREE.Vector3(0, 0, 1));
+  }, [userPos]);
+
+  useEffect(() => {
+    if (userPos) centering.current = true;
+  }, [userPos]);
 
   useFrame((_, delta) => {
     const group = groupRef.current;
@@ -149,9 +158,17 @@ function Earth({ mode, progress }: GlobeCanvasProps) {
 
     const dt = Math.min(delta, 0.05);
 
-    // Idle spin + scroll coupling ("scrolling turns the world"). Always rotating.
-    group.rotateY(dt * 0.06 + dProgress * 4.2);
-    group.rotation.x = 0.16 * Math.sin(performance.now() * 0.00004);
+    if (centering.current && targetQuat) {
+      // Smooth fly-to centering on the user's location.
+      group.quaternion.slerp(targetQuat, Math.min(dt * 2, 1));
+      if (group.quaternion.angleTo(targetQuat) < 0.03) centering.current = false;
+    } else {
+      // Idle spin + scroll coupling ("scrolling turns the world"). Always rotating.
+      group.rotateY(dt * 0.06 + dProgress * 4.2);
+      if (!userPos) {
+        group.rotation.x = 0.16 * Math.sin(performance.now() * 0.00004);
+      }
+    }
 
     if (cloudRef.current) cloudRef.current.rotation.y += dt * 0.012;
   });
@@ -172,20 +189,45 @@ function Earth({ mode, progress }: GlobeCanvasProps) {
       {mode === "full" ? (
         <mesh ref={cloudRef}>
           <sphereGeometry args={[1.012, segments, segments]} />
-          <meshStandardMaterial map={cloudMap} transparent opacity={0.38} depthWrite={false} />
+          <meshStandardMaterial
+            map={cloudMap}
+            transparent
+            opacity={0.38}
+            depthWrite={false}
+          />
         </mesh>
       ) : null}
 
-      {GLOW_REGIONS.map((region, index) => (
-        <GlowRegion
-          key={`${region.lat}-${region.lng}`}
-          position={latLngToVector3(region.lat, region.lng, 1.012)}
-          color={region.color}
-          scale={region.scale}
-          phase={index * 1.1}
-          texture={glowTexture}
+      {markers.map((marker) => {
+        const emphasized = userPos
+          ? distanceKm(userPos, { lat: marker.lat, lng: marker.lng }) < 450
+          : false;
+        return (
+          <Marker
+            key={marker.city}
+            marker={marker}
+            emphasized={emphasized}
+            isUser={false}
+            onSelectCity={onSelectCity}
+          />
+        );
+      })}
+
+      {userPos ? (
+        <Marker
+          marker={{
+            city: "you",
+            label: "You are here",
+            lat: userPos.lat,
+            lng: userPos.lng,
+            count: 0,
+            href: "/resources",
+          }}
+          emphasized
+          isUser
+          onSelectCity={onSelectCity}
         />
-      ))}
+      ) : null}
     </group>
   );
 }
@@ -198,7 +240,7 @@ export function GlobeCanvas(props: GlobeCanvasProps) {
       gl={{ alpha: true, antialias: props.mode === "full" }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.7} />
+      <ambientLight intensity={0.65} />
       <directionalLight position={SUN_DIRECTION} intensity={1.5} />
       <Atmosphere />
       <Suspense fallback={null}>
