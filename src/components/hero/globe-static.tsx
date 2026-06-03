@@ -21,8 +21,6 @@ export function GlobeStatic({ className }: { className?: string }) {
       />
       {/* Rim light */}
       <div className="absolute inset-[6%] rounded-full ring-1 ring-teal-200/30" />
-      {/* A single amber service pin for brand identity */}
-      <span className="absolute left-[52%] top-[44%] size-3 -translate-x-1/2 rounded-full bg-honey-400 shadow-[0_0_14px_4px_rgba(239,164,23,0.65)]" />
     </div>
   );
 }
