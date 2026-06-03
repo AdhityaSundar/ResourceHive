@@ -31,9 +31,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#ecfdf5_0%,#e0f2fe_48%,#fef9c3_100%)] text-[#102a2a]">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.22)_1px,transparent_1px)] bg-[size:84px_84px]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_52%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-cream text-ink">
+      <div className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-70" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,_rgba(14,124,134,0.12),_transparent_52%)]" />
       <header className="sticky top-0 z-40 border-b border-white/40 bg-white/55 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
           <nav className="hidden items-center gap-6 lg:flex">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-sm font-medium text-[#526d72] transition hover:text-emerald-600">
+              <Link key={link.href} href={link.href} className="text-sm font-medium text-[#526d72] transition hover:text-teal-600">
                 {link.label}
               </Link>
             ))}
@@ -83,7 +83,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <div className={cn("border-t border-white/40 px-4 py-4 lg:hidden", open ? "block" : "hidden")}>
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="rounded-2xl px-3 py-2 text-sm font-medium text-[#315963] hover:bg-white/55 hover:text-emerald-600">
+              <Link key={link.href} href={link.href} className="rounded-2xl px-3 py-2 text-sm font-medium text-[#315963] hover:bg-white/55 hover:text-teal-600">
                 {link.label}
               </Link>
             ))}
@@ -114,7 +114,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <h4 className="font-semibold text-[#102a2a]">{messages.shell.platform}</h4>
             <div className="mt-3 space-y-2">
               {navLinks.slice(0, 6).map((link) => (
-                <Link key={link.href} href={link.href} className="block hover:text-emerald-600">
+                <Link key={link.href} href={link.href} className="block hover:text-teal-600">
                   {link.label}
                 </Link>
               ))}

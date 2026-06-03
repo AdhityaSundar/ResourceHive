@@ -1,21 +1,91 @@
 @import "tailwindcss";
 
+/* =========================================================================
+   ResourceHive design tokens — amber-led warmth + teal trust, hive motif.
+   Warm = "invite" (hero, community, volunteer). Teal = "focus" (search,
+   results, urgent). Emerald green intentionally retired.
+   ========================================================================= */
 :root {
-  --background: #f6fffb;
-  --foreground: #102a2a;
-  --muted: #526d72;
-  --card: rgba(255, 255, 255, 0.48);
-  --border: rgba(14, 165, 233, 0.16);
-  --brand-green: #16a34a;
-  --brand-blue: #0ea5e9;
-  --brand-yellow: #facc15;
+  /* Warm — honey/amber/orange (pulled from the honeycomb logo) */
+  --honey-50: #fff8ec;
+  --honey-100: #fdecca;
+  --honey-200: #f8d589;
+  --honey-300: #f4be4e;
+  --honey-400: #efa417;
+  --honey-500: #e0850c; /* primary warm */
+  --honey-600: #bc6709;
+  --honey-700: #8a4a0b;
+  --honey-800: #5c3209;
+  --orange-500: #e8650a; /* sharp accent */
+
+  /* Cool — teal/blue (trust, focus) */
+  --teal-50: #ecf8f8;
+  --teal-100: #cdebec;
+  --teal-200: #9bd6d8;
+  --teal-300: #5fb8bc;
+  --teal-400: #2e979d;
+  --teal-500: #0e7c86; /* primary teal */
+  --teal-600: #0b616b;
+  --teal-700: #0a4951; /* button fill (white text, AA) */
+  --teal-800: #0a2f38;
+  --teal-900: #07212a; /* hero backdrop navy */
+
+  /* Warm-tinted neutrals */
+  --cream: #fbf8f2;
+  --surface: #ffffff;
+  --ink: #14262b; /* strong text */
+  --ink-soft: #2c4248;
+  --muted: #5a6b6e; /* secondary text — AA on cream */
+  --border: rgba(11, 79, 84, 0.14);
+  --border-strong: rgba(11, 79, 84, 0.24);
+
+  /* Semantic */
+  --background: var(--cream);
+  --foreground: var(--ink);
+  --card: rgba(255, 255, 255, 0.72);
+
+  /* Elevation — warm/teal tinted, never flat black */
+  --shadow-e1: 0 1px 2px rgba(20, 38, 43, 0.06), 0 1px 3px rgba(20, 38, 43, 0.07);
+  --shadow-e2: 0 4px 12px rgba(20, 38, 43, 0.08);
+  --shadow-e3: 0 12px 32px rgba(11, 79, 84, 0.1), 0 2px 6px rgba(20, 38, 43, 0.06);
+  --shadow-e4: 0 22px 50px rgba(11, 79, 84, 0.16), 0 4px 12px rgba(20, 38, 43, 0.08);
+  --glow-warm: 0 18px 44px rgba(224, 133, 12, 0.22);
+  --glow-teal: 0 18px 44px rgba(14, 124, 134, 0.2);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Segoe UI", "Aptos", "Helvetica Neue", sans-serif;
-  --font-display: "Georgia", "Times New Roman", serif;
+
+  --color-honey-50: var(--honey-50);
+  --color-honey-100: var(--honey-100);
+  --color-honey-200: var(--honey-200);
+  --color-honey-300: var(--honey-300);
+  --color-honey-400: var(--honey-400);
+  --color-honey-500: var(--honey-500);
+  --color-honey-600: var(--honey-600);
+  --color-honey-700: var(--honey-700);
+  --color-honey-800: var(--honey-800);
+  --color-orange-500: var(--orange-500);
+
+  --color-teal-50: var(--teal-50);
+  --color-teal-100: var(--teal-100);
+  --color-teal-200: var(--teal-200);
+  --color-teal-300: var(--teal-300);
+  --color-teal-400: var(--teal-400);
+  --color-teal-500: var(--teal-500);
+  --color-teal-600: var(--teal-600);
+  --color-teal-700: var(--teal-700);
+  --color-teal-800: var(--teal-800);
+  --color-teal-900: var(--teal-900);
+
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -25,36 +95,63 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Segoe UI", "Aptos", "Helvetica Neue", sans-serif;
+  font-family: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
   max-width: 100vw;
+  /* Warm cream base with faint honey + teal atmospheric pooling. */
   background-image:
-    radial-gradient(circle at 14% 18%, rgba(34, 197, 94, 0.16), transparent 24%),
-    radial-gradient(circle at 86% 14%, rgba(14, 165, 233, 0.16), transparent 22%),
-    radial-gradient(circle at 50% 70%, rgba(250, 204, 21, 0.13), transparent 28%),
-    linear-gradient(135deg, #ecfdf5 0%, #e0f2fe 48%, #fef9c3 100%);
+    radial-gradient(circle at 12% 8%, rgba(239, 164, 23, 0.1), transparent 26%),
+    radial-gradient(circle at 88% 6%, rgba(14, 124, 134, 0.08), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(224, 133, 12, 0.06), transparent 30%);
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
 }
+
+/* =========================================================================
+   Honeycomb textures — atmospheric, never noisy. Seamless 28×49 tile.
+   *-dark = white lines for the deep teal hero; *-light = teal lines for
+   cream sections.
+   ========================================================================= */
+.honeycomb-texture-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.honeycomb-texture-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill='%230a4951' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Hexagon clip — for category icon frames / badges. Flat-top hex. */
+.hex-clip {
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+}
+
+/* =========================================================================
+   Elevation utilities
+   ========================================================================= */
+.shadow-e1 { box-shadow: var(--shadow-e1); }
+.shadow-e2 { box-shadow: var(--shadow-e2); }
+.shadow-e3 { box-shadow: var(--shadow-e3); }
+.shadow-e4 { box-shadow: var(--shadow-e4); }
 
 .glass-panel {
   background: var(--card);
   border: 1px solid var(--border);
-  backdrop-filter: blur(18px);
-  box-shadow:
-    0 24px 64px rgba(14, 165, 233, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-e3), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .text-balance {
   text-wrap: balance;
 }
 
+/* Tactile focus glow for buttons/chips, tuned to the brand. */
 .interactive-glow {
   position: relative;
 }
@@ -66,10 +163,10 @@ h4 {
   pointer-events: none;
   border-radius: inherit;
   opacity: 0;
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition: opacity 180ms ease;
   box-shadow:
-    0 0 0 1px rgba(14, 165, 233, 0.24),
-    0 0 28px rgba(34, 197, 94, 0.14);
+    0 0 0 1px rgba(14, 124, 134, 0.28),
+    0 0 26px rgba(224, 133, 12, 0.18);
 }
 
 .interactive-glow:hover::after,
@@ -77,16 +174,35 @@ h4 {
   opacity: 1;
 }
 
+/* =========================================================================
+   Accessibility — visible focus, reduced motion
+   ========================================================================= */
+:focus-visible {
+  outline: 2px solid var(--teal-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes hex-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.18); }
 }
 
 .logo-hover {
@@ -98,7 +214,8 @@ h4 {
 }
 
 ::selection {
-  background: rgba(14, 165, 233, 0.18);
+  background: rgba(224, 133, 12, 0.22);
+  color: var(--ink);
 }
 
 a,
@@ -114,15 +231,15 @@ html {
 select,
 select option,
 select optgroup {
-  color: #102a2a;
-  background-color: #f6fffb;
+  color: var(--ink);
+  background-color: var(--surface);
 }
 
 select option:checked,
 select option:hover,
 select option:focus {
-  background-color: #dff7ee;
-  color: #102a2a;
+  background-color: var(--teal-50);
+  color: var(--ink);
 }
 
 main,
