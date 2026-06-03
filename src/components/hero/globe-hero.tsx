@@ -92,8 +92,9 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
   });
 
   // Headline travels right -> left, staying fully in front of the globe and
-  // legible the entire time (no occlusion behind the sphere).
-  const headlineX = useTransform(scrollYProgress, [0, 1], ["30%", "-30%"]);
+  // legible the entire time (no occlusion behind the sphere). A soft scrim
+  // rides with it so the text stays readable over any part of the scene.
+  const headlineX = useTransform(scrollYProgress, [0, 1], ["22%", "-22%"]);
   const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["4%", "-3%", "3%"]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
@@ -123,7 +124,12 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           style={{ x: headlineX, y: headlineY }}
           className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center px-6"
         >
-          <div className="w-full max-w-2xl">
+          <div className="relative w-full max-w-2xl">
+            {/* traveling scrim keeps the text legible over any background */}
+            <div
+              aria-hidden="true"
+              className="absolute -inset-x-16 -inset-y-12 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(7,33,42,0.72),rgba(7,33,42,0.35)_45%,transparent_72%)] blur-2xl"
+            />
             <Headline id="hero-heading" />
           </div>
         </motion.div>

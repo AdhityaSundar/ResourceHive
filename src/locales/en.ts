@@ -118,9 +118,9 @@ export const en = {
       "Every category is designed to make the next step obvious, from emergency shelter to longer-term job and education support.",
     exploreCategory: "Explore",
     featuredResourcesEyebrow: "Featured resources",
-    featuredResourcesTitle: "Fresh listings seeded for launch",
+    featuredResourcesTitle: "Verified help, ready to browse",
     featuredResourcesDescription:
-      "The platform starts with ready-to-browse sample organizations and is structured to expand with nonprofit and admin contributions.",
+      "A snapshot of trusted local organizations — full details, hours, and directions are always a tap away.",
     strategyEyebrow: "AI + planning",
     strategyTitle: "A product strategy grounded in a real business case",
     strategyDescription:
@@ -137,7 +137,7 @@ export const en = {
     volunteerEyebrow: "Volunteer and donate",
     volunteerTitle: "Support the network behind the services",
     volunteerDescription:
-      "Invite community volunteers, donors, and nonprofit operators into the platform with clear calls to action, resource sponsorships, and event-based participation.",
+      "Every listing stays current because people pitch in. Give, lend a hand, or add your organization to the hive.",
     volunteerPoint1: "Sponsor emergency meal kits or hygiene supplies.",
     volunteerPoint2: "Volunteer for translation, transportation, or intake support.",
     volunteerPoint3: "Partner with ResourceHive to publish verified local listings.",

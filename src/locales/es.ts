@@ -119,9 +119,9 @@ export const es = {
       "Cada categoría está diseñada para hacer evidente el siguiente paso, desde refugio de emergencia hasta apoyo laboral y educativo a largo plazo.",
     exploreCategory: "Explorar",
     featuredResourcesEyebrow: "Recursos destacados",
-    featuredResourcesTitle: "Listados listos para el lanzamiento",
+    featuredResourcesTitle: "Ayuda verificada, lista para explorar",
     featuredResourcesDescription:
-      "La plataforma comienza con organizaciones de ejemplo listas para explorar y está preparada para crecer con aportes de administradores y organizaciones.",
+      "Una muestra de organizaciones locales de confianza — los detalles, horarios y direcciones están siempre a un toque.",
     strategyEyebrow: "IA + estrategia",
     strategyTitle: "Una estrategia de producto basada en un caso real de negocio",
     strategyDescription:
@@ -138,7 +138,7 @@ export const es = {
     volunteerEyebrow: "Voluntariado y donaciones",
     volunteerTitle: "Apoya la red detrás de los servicios",
     volunteerDescription:
-      "Invita a voluntarios, donantes y operadores comunitarios a participar mediante acciones claras, patrocinios de recursos y colaboración basada en eventos.",
+      "Cada listado se mantiene al día porque la gente colabora. Dona, echa una mano o suma tu organización a la colmena.",
     volunteerPoint1: "Patrocina kits de comida de emergencia o suministros de higiene.",
     volunteerPoint2: "Haz voluntariado para traducción, transporte o apoyo de admisión.",
     volunteerPoint3: "Asóciate con ResourceHive para publicar listados locales verificados.",

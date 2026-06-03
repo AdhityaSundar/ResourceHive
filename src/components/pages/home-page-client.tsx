@@ -6,6 +6,9 @@ import { GlobeHero } from "@/components/hero/globe-hero";
 import { CountUp } from "@/components/home/count-up";
 import { FeaturedCategories } from "@/components/home/featured-categories";
 import { FeaturedResourceCard } from "@/components/home/featured-resource-card";
+import { HowItWorks } from "@/components/home/how-it-works";
+import { Partners } from "@/components/home/partners";
+import { Testimonials } from "@/components/home/testimonials";
 import { VolunteerDonate } from "@/components/home/volunteer-donate";
 import { HeroSearchExperience } from "@/components/resources/hero-search-experience";
 import { HoneycombDivider } from "@/components/site/honeycomb-divider";
@@ -53,6 +56,10 @@ export function HomePageClient({
         </div>
       </Reveal>
 
+      <Reveal className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 lg:px-8">
+        <Partners />
+      </Reveal>
+
       <HoneycombDivider />
 
       <Reveal className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -62,6 +69,10 @@ export function HomePageClient({
           description={messages.home.categoriesDescription}
         />
         <FeaturedCategories />
+      </Reveal>
+
+      <Reveal className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <HowItWorks />
       </Reveal>
 
       <Reveal className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -79,25 +90,9 @@ export function HomePageClient({
 
       <HoneycombDivider />
 
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow={messages.home.strategyEyebrow}
-          title={messages.home.strategyTitle}
-          description={messages.home.strategyDescription}
-        />
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {[
-            { title: messages.home.execSummary, text: messages.home.execSummaryText },
-            { title: messages.home.marketUsers, text: messages.home.marketUsersText },
-            { title: messages.home.growthFeatures, text: messages.home.growthFeaturesText },
-          ].map((item) => (
-            <div key={item.title} className="glass-panel rounded-[30px] p-6 transition hover:-translate-y-1">
-              <h3 className="font-display text-2xl font-semibold text-ink">{item.title}</h3>
-              <p className="mt-4 text-sm leading-7 text-muted">{item.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Reveal className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <Testimonials />
+      </Reveal>
 
       <Reveal className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <VolunteerDonate />
