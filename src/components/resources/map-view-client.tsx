@@ -59,27 +59,27 @@ export function MapViewClient({ resources }: { resources: Resource[] }) {
           {activeResource ? (
             <>
               <div className="glass-panel rounded-[30px] p-6">
-                <p className="text-sm font-bold uppercase tracking-[0.28em] text-fuchsia-500">
+                <p className="text-sm font-bold uppercase tracking-[0.28em] text-teal-600">
                   {messages.common.selectedResource}
                 </p>
-                <h2 className="mt-4 text-2xl font-bold text-[#2a1833]">{activeResource.name}</h2>
+                <h2 className="mt-4 text-2xl font-bold text-ink">{activeResource.name}</h2>
                 {activeResource.description ? (
-                  <p className="mt-3 text-sm leading-7 text-[#7c6b88]">
+                  <p className="mt-3 text-sm leading-7 text-muted">
                     {activeResource.description}
                   </p>
                 ) : null}
                 {activeResource.info && activeResource.info !== activeResource.description ? (
-                  <p className="mt-3 text-sm leading-7 text-[#7c6b88]">
+                  <p className="mt-3 text-sm leading-7 text-muted">
                     {activeResource.info}
                   </p>
                 ) : null}
                 {activeLocation ? (
-                  <p className="mt-3 text-sm leading-7 text-[#7c6b88]">{activeLocation}</p>
+                  <p className="mt-3 text-sm leading-7 text-muted">{activeLocation}</p>
                 ) : null}
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     href={`/resource/${activeResource.id}`}
-                    className="interactive-glow inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#a855f7,#ec4899)] px-5 text-sm font-semibold text-white"
+                    className="interactive-glow inline-flex h-11 items-center justify-center rounded-full bg-teal-700 px-5 text-sm font-semibold text-white transition hover:bg-teal-600"
                   >
                     {messages.common.viewDetails}
                   </Link>
@@ -93,17 +93,17 @@ export function MapViewClient({ resources }: { resources: Resource[] }) {
                     onClick={() => setActiveId(resource.id)}
                     className={`interactive-glow flex w-full items-start justify-between rounded-[24px] border px-4 py-4 text-left transition ${
                       resource.id === activeResource.id
-                        ? "border-fuchsia-200 bg-fuchsia-50/80"
-                        : "border-white/40 bg-white/55 hover:bg-white/75"
+                        ? "border-teal-200 bg-teal-50"
+                        : "border-[var(--border)] bg-white/60 hover:bg-white"
                     }`}
                   >
                     <div>
-                      <p className="font-bold text-[#2a1833]">{resource.name}</p>
-                      <p className="mt-1 text-sm text-[#8a7696]">
+                      <p className="font-bold text-ink">{resource.name}</p>
+                      <p className="mt-1 text-sm text-muted">
                         {[localizeCategory(resource.category, locale), formatLocation(resource)].filter(Boolean).join(" | ")}
                       </p>
                     </div>
-                    <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-[#6b5177]">
+                    <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
                       {messages.common.select}
                     </span>
                   </button>
@@ -111,7 +111,7 @@ export function MapViewClient({ resources }: { resources: Resource[] }) {
               </div>
             </>
           ) : (
-            <div className="glass-panel rounded-[30px] p-6 text-[#7c6b88]">
+            <div className="glass-panel rounded-[30px] p-6 text-muted">
               {messages.common.noMapResults}
             </div>
           )}

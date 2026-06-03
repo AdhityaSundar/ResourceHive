@@ -36,7 +36,7 @@ export function ResourceFiltersPanel({
     <div className="glass-panel rounded-[30px] p-5">
       <div className="grid gap-4 lg:grid-cols-[1.6fr_0.8fr_0.8fr]">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-4 size-4 text-[#9c7aaa]" />
+          <Search className="pointer-events-none absolute left-4 top-4 size-4 text-teal-500" />
           <Input
             value={filters.query}
             onChange={(event) => onChange({ ...filters, query: event.target.value })}
@@ -44,16 +44,16 @@ export function ResourceFiltersPanel({
             className="pl-11"
           />
           {filters.query && suggestions.length > 0 ? (
-            <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20 rounded-3xl border border-white/50 bg-white/88 p-2 shadow-[0_24px_60px_rgba(14,165,233,0.12)] backdrop-blur">
+            <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20 rounded-3xl border border-[var(--border)] bg-white/90 p-2 shadow-e3 backdrop-blur">
               {suggestions.map((resource) => (
                 <button
                   key={resource.id}
                   type="button"
                   onClick={() => onChange({ ...filters, query: resource.name })}
-                  className="flex w-full items-center justify-between rounded-2xl px-3 py-3 text-left text-sm transition hover:bg-sky-50/70"
+                  className="flex w-full items-center justify-between rounded-2xl px-3 py-3 text-left text-sm transition hover:bg-teal-50"
                 >
-                  <span className="font-semibold text-[#102a2a]">{resource.name}</span>
-                  <span className="text-[#647b80]">{resource.city}</span>
+                  <span className="font-semibold text-ink">{resource.name}</span>
+                  <span className="text-muted">{resource.city}</span>
                 </button>
               ))}
             </div>
@@ -96,8 +96,8 @@ export function ResourceFiltersPanel({
               }
               className={`interactive-glow rounded-full px-4 py-2 text-sm font-semibold transition ${
                 active
-                  ? "bg-[linear-gradient(135deg,#16a34a,#0ea5e9)] text-white"
-                  : "bg-white/55 text-[#315963] hover:bg-white/75"
+                  ? "bg-teal-700 text-white shadow-e2"
+                  : "border border-teal-200 bg-white/70 text-teal-700 hover:bg-teal-50"
               }`}
             >
               {localizeNeed(need, locale)}

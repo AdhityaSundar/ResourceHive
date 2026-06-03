@@ -165,13 +165,13 @@ export function AdminPanelClient({ initialResources }: { initialResources: Resou
       <div className="glass-panel rounded-[32px] p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black text-[#2a1833]">{messages.admin.title}</h1>
-            <p className="mt-2 text-sm text-[#7c6b88]">
+            <h1 className="text-3xl font-bold text-ink">{messages.admin.title}</h1>
+            <p className="mt-2 text-sm text-muted">
               {messages.admin.description}
             </p>
           </div>
           <div className="flex gap-2">
-            <label className="interactive-glow inline-flex h-10 items-center rounded-full border border-white/40 bg-white/55 px-4 text-sm font-semibold text-[#4c3559]">
+            <label className="interactive-glow inline-flex h-10 items-center rounded-full border border-white/40 bg-white/55 px-4 text-sm font-semibold text-ink-soft">
               {uploading ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Upload className="mr-2 size-4" />}
               {messages.common.uploadSheet}
               <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={importSpreadsheet} />
@@ -200,8 +200,8 @@ export function AdminPanelClient({ initialResources }: { initialResources: Resou
             <div key={resource.id} className="rounded-3xl border border-white/40 bg-white/55 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="font-bold text-[#2a1833]">{resource.name}</h2>
-                  <p className="mt-1 text-sm text-[#7c6b88]">
+                  <h2 className="font-bold text-ink">{resource.name}</h2>
+                  <p className="mt-1 text-sm text-muted">
                     {localizeCategory(resource.category, locale)} · {resource.city}
                   </p>
                 </div>
@@ -212,14 +212,14 @@ export function AdminPanelClient({ initialResources }: { initialResources: Resou
                       setEditing(resource);
                       reset(toFormValues(resource));
                     }}
-                    className="rounded-full border border-white/40 bg-white/55 p-2 text-[#4c3559] transition hover:border-fuchsia-200"
+                    className="rounded-full border border-[var(--border)] bg-white/60 p-2 text-ink-soft transition hover:border-teal-200 hover:text-teal-700"
                   >
                     <PencilLine className="size-4" />
                   </button>
                   <button
                     type="button"
                     onClick={() => removeResource(resource.id)}
-                    className="rounded-full border border-white/10 bg-white/5 p-2 text-rose-400 transition hover:border-rose-400/30"
+                    className="rounded-full border border-[var(--border)] bg-white/60 p-2 text-rose-500 transition hover:border-rose-300 hover:text-rose-600"
                   >
                     <Trash2 className="size-4" />
                   </button>

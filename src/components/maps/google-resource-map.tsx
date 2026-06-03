@@ -149,7 +149,7 @@ export function GoogleResourceMap({
 
   if (!hasUsableApiKey) {
     return (
-      <div className={`glass-panel flex items-center justify-center rounded-[30px] p-6 text-center text-[#526d72] ${className}`}>
+      <div className={`glass-panel flex items-center justify-center rounded-[30px] p-6 text-center text-muted ${className}`}>
         {messages.common.mapApiKeyMessage}
       </div>
     );
@@ -157,7 +157,7 @@ export function GoogleResourceMap({
 
   if (loadError) {
     return (
-      <div className={`glass-panel flex items-center justify-center rounded-[30px] p-6 text-center text-[#526d72] ${className}`}>
+      <div className={`glass-panel flex items-center justify-center rounded-[30px] p-6 text-center text-muted ${className}`}>
         {messages.common.mapLoadError}
       </div>
     );
@@ -169,7 +169,7 @@ export function GoogleResourceMap({
 
   if (mappedResources.length === 0) {
     return (
-      <div className={`glass-panel flex items-center justify-center rounded-[30px] p-6 text-center text-[#526d72] ${className}`}>
+      <div className={`glass-panel flex items-center justify-center rounded-[30px] p-6 text-center text-muted ${className}`}>
         {messages.common.noMapLocations}
       </div>
     );
@@ -236,7 +236,7 @@ export function GoogleResourceMap({
               <div className="flex flex-wrap gap-2">
                 <Link
                   href={`/resource/${selectedResource.id}`}
-                  className="inline-flex h-10 items-center justify-center rounded-full bg-[linear-gradient(135deg,#16a34a,#0ea5e9)] px-4 text-sm font-semibold text-white"
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-teal-700 px-4 text-sm font-semibold text-white"
                 >
                   {messages.common.viewDetails}
                 </Link>

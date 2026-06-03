@@ -7,7 +7,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     <select
       ref={ref}
       className={cn(
-        "h-12 w-full rounded-2xl border border-white/40 bg-white/60 px-4 text-sm text-[#18333a] outline-none transition focus:border-sky-300 focus:ring-4 focus:ring-sky-200/50",
+        "h-12 w-full rounded-2xl border border-[var(--border)] bg-white/70 px-4 text-sm text-ink outline-none transition focus:border-teal-300 focus:ring-4 focus:ring-teal-200/50",
         className,
       )}
       {...props}

@@ -39,14 +39,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <Link href="/" className="flex items-center gap-3">
             <BrandMark className="size-10 sm:size-11" priority />
             <div>
-              <div className="text-lg font-black tracking-tight text-[#102a2a]">{messages.shell.brandName}</div>
-              <div className="text-xs text-[#647b80]">{messages.shell.brandSubtitle}</div>
+              <div className="font-display text-lg font-bold tracking-tight text-ink">{messages.shell.brandName}</div>
+              <div className="text-xs text-muted">{messages.shell.brandSubtitle}</div>
             </div>
           </Link>
 
           <nav className="hidden items-center gap-6 lg:flex">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-sm font-medium text-[#526d72] transition hover:text-teal-600">
+              <Link key={link.href} href={link.href} className="text-sm font-medium text-muted transition hover:text-teal-600">
                 {link.label}
               </Link>
             ))}
@@ -83,7 +83,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <div className={cn("border-t border-white/40 px-4 py-4 lg:hidden", open ? "block" : "hidden")}>
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="rounded-2xl px-3 py-2 text-sm font-medium text-[#315963] hover:bg-white/55 hover:text-teal-600">
+              <Link key={link.href} href={link.href} className="rounded-2xl px-3 py-2 text-sm font-medium text-ink-soft hover:bg-white/55 hover:text-teal-600">
                 {link.label}
               </Link>
             ))}

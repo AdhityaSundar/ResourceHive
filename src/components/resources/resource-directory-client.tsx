@@ -95,7 +95,7 @@ export function ResourceDirectoryClient({
         resources={initialResources}
         options={result.filters}
       />
-      <div className="flex items-center justify-between text-sm text-[#526d72]">
+      <div className="flex items-center justify-between text-sm text-muted">
         <p>
           {result.total} {messages.resourcesPage.matched} Â· {result.counts.totalResources} {messages.resourcesPage.totalInDirectory}
         </p>
@@ -105,8 +105,8 @@ export function ResourceDirectoryClient({
             onClick={() => setView("grid")}
             className={`interactive-glow rounded-full p-2 ${
               view === "grid"
-                ? "bg-sky-100 text-emerald-600"
-                : "bg-white/55 text-[#647b80]"
+                ? "bg-teal-100 text-teal-700"
+                : "bg-white/60 text-muted"
             }`}
           >
             <Grid2X2 className="size-4" />
@@ -116,8 +116,8 @@ export function ResourceDirectoryClient({
             onClick={() => setView("list")}
             className={`interactive-glow rounded-full p-2 ${
               view === "list"
-                ? "bg-sky-100 text-emerald-600"
-                : "bg-white/55 text-[#647b80]"
+                ? "bg-teal-100 text-teal-700"
+                : "bg-white/60 text-muted"
             }`}
           >
             <List className="size-4" />
@@ -138,7 +138,7 @@ export function ResourceDirectoryClient({
           ))}
         </div>
       ) : (
-        <div className="glass-panel rounded-[30px] p-8 text-center text-[#526d72]">
+        <div className="glass-panel rounded-[30px] p-8 text-center text-muted">
           {messages.common.noResultsFound}
         </div>
       )}
@@ -148,7 +148,7 @@ export function ResourceDirectoryClient({
           <button
             type="button"
             onClick={loadMore}
-            className="interactive-glow inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#facc15,#f59e0b)] px-5 py-3 text-sm font-semibold text-slate-950"
+            className="interactive-glow inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,var(--honey-300),var(--honey-500))] px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5"
           >
             {loadingMore ? <LoaderCircle className="size-4 animate-spin" /> : null}
             {messages.common.loadMoreResources}

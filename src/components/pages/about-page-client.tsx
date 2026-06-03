@@ -22,8 +22,8 @@ export function AboutPageClient() {
       <div className="mt-10 grid gap-5 lg:grid-cols-3">
         {items.map((item) => (
           <div key={item.title} className="glass-panel rounded-[30px] p-6">
-            <h2 className="text-2xl font-bold text-[#2a1833]">{item.title}</h2>
-            <p className="mt-4 text-sm leading-7 text-[#7c6b88]">{item.text}</p>
+            <h2 className="text-2xl font-bold text-ink">{item.title}</h2>
+            <p className="mt-4 text-sm leading-7 text-muted">{item.text}</p>
           </div>
         ))}
       </div>
