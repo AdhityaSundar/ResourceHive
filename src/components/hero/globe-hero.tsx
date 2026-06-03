@@ -22,9 +22,12 @@ function Headline({ id }: { id?: string }) {
   return (
     <h1
       id={id}
-      className="font-display text-[clamp(2.5rem,5.6vw,4.75rem)] font-extrabold leading-[1.05] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]"
+      className="font-display text-[clamp(2.25rem,5.2vw,4.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]"
     >
-      Find the <span className="text-honey-300 accent-glow">help</span> you need{" "}
+      Find the <span className="text-honey-300 accent-glow">help</span>
+      <br />
+      you need
+      <br />
       <span className="text-honey-300 accent-glow">most</span>.
     </h1>
   );
@@ -98,11 +101,9 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
     offset: ["start start", "end end"],
   });
 
-  // Headline travels right -> left and settles as a multi-line, left-aligned
-  // block at the left margin (stops cleanly, never cut off). Always in front of
-  // the globe; a soft scrim rides with it so it stays readable over anything.
-  const headlineX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
-  const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["3%", "-2%", "2%"]);
+  // Headline sits as a left-anchored, multi-line block with a gentle vertical
+  // parallax. Always in front of the globe; a soft scrim keeps it readable.
+  const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["6%", "-2%", "2%"]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
@@ -126,12 +127,12 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           <GlobeCanvas mode={mode} progress={scrollYProgress} />
         </div>
 
-        {/* Headline — left-anchored, wraps to multiple lines, always readable */}
+        {/* Headline — left-anchored, hard-broken into lines, always readable */}
         <motion.div
-          style={{ x: headlineX, y: headlineY }}
+          style={{ y: headlineY }}
           className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-start px-6 sm:pl-[6%]"
         >
-          <div className="relative max-w-md text-left">
+          <div className="relative text-left">
             {/* traveling scrim keeps the text legible over any background */}
             <div
               aria-hidden="true"
