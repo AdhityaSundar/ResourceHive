@@ -7,7 +7,6 @@ import { CountUp } from "@/components/home/count-up";
 import { FeaturedCategories } from "@/components/home/featured-categories";
 import { FeaturedResourceCard } from "@/components/home/featured-resource-card";
 import { HowItWorks } from "@/components/home/how-it-works";
-import { Partners } from "@/components/home/partners";
 import { VolunteerDonate } from "@/components/home/volunteer-donate";
 import { HeroSearchExperience } from "@/components/resources/hero-search-experience";
 import { HoneycombDivider } from "@/components/site/honeycomb-divider";
@@ -53,10 +52,6 @@ export function HomePageClient({
             </div>
           ))}
         </div>
-      </Reveal>
-
-      <Reveal className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 lg:px-8">
-        <Partners />
       </Reveal>
 
       <HoneycombDivider />
