@@ -117,12 +117,13 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
     offset: ["start start", "end end"],
   });
 
-  // Headline parallax: it starts as one line on the right, then travels left
-  // with the globe while its max-width shrinks — reflowing the single line into
-  // three left-aligned lines that land on the left. (maxW values are tunable.)
+  // Headline parallax: starts as one line on the right (pushed there by a +x
+  // offset), then travels to the left margin while its max-width shrinks —
+  // reflowing the single line into three left-aligned lines, fully in frame.
+  // (x start and maxW end are the two tunable knobs.)
   const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["6%", "-2%", "2%"]);
-  const headlineX = useTransform(scrollYProgress, [0, 1], ["0vw", "-56vw"]);
-  const headlineMaxW = useTransform(scrollYProgress, [0, 1], ["34ch", "14ch"]);
+  const headlineX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
+  const headlineMaxW = useTransform(scrollYProgress, [0, 1], ["34ch", "11ch"]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
@@ -150,7 +151,7 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
             three lines as it narrows (driven entirely by scroll). */}
         <motion.div
           style={{ y: headlineY }}
-          className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-end px-6 sm:pr-[6%]"
+          className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-start px-6 sm:pl-[6%]"
         >
           <motion.div style={{ x: headlineX }} className="relative">
             {/* scrim rides with the text so it stays legible over the globe */}
