@@ -10,7 +10,7 @@ export function Bee({ className }: { className?: string }) {
     <svg
       viewBox="0 0 64 64"
       aria-hidden="true"
-      className={cn("drop-shadow-[0_4px_10px_rgba(92,50,9,0.35)]", className)}
+      className={cn("drop-shadow-[0_0_14px_rgba(244,190,78,0.75)]", className)}
     >
       {/* wings */}
       <g className="origin-center">
@@ -19,7 +19,8 @@ export function Bee({ className }: { className?: string }) {
       </g>
       {/* body */}
       <g transform="rotate(18 32 36)">
-        <ellipse cx="32" cy="36" rx="15" ry="11" fill="#1f2937" />
+        <ellipse cx="32" cy="36" rx="15.5" ry="11.5" fill="#3a2a12" />
+        <ellipse cx="32" cy="36" rx="15" ry="11" fill="#2b2118" />
         <path d="M22 30c4 5 16 5 20 0l-2-3c-3 3.5-13 3.5-16 0z" fill="#f5b301" />
         <path d="M19 36c6 5 20 5 26 0v3c-6 5-20 5-26 0z" fill="#f5b301" />
         <path d="M22 42c4 4 14 4 18 0l-1 3c-4 3-12 3-16 0z" fill="#f5b301" />
