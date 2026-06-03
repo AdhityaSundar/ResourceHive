@@ -4,21 +4,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "interactive-glow inline-flex items-center justify-center rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.98] hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-50",
+  "interactive-glow inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
+        // Warm "invite" CTA: amber gradient with dark ink — high contrast (AA) and on-brand honey.
         primary:
-          "bg-[linear-gradient(135deg,#16a34a,#0ea5e9)] text-white shadow-[0_14px_36px_rgba(14,165,233,0.18)] hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(34,197,94,0.18)]",
+          "bg-[linear-gradient(135deg,var(--honey-300),var(--honey-500))] text-ink shadow-e3 hover:-translate-y-0.5 hover:shadow-[var(--glow-warm)]",
+        // Calm "focus" CTA for search/results/clinical areas: deep teal, white text.
+        teal:
+          "bg-teal-700 text-white shadow-e2 hover:-translate-y-0.5 hover:bg-teal-600 hover:shadow-[var(--glow-teal)]",
         secondary:
-          "bg-white/55 text-[#18333a] ring-1 ring-sky-100/70 backdrop-blur hover:bg-white/75",
-        ghost:
-          "bg-transparent text-[#315963] hover:bg-white/45",
+          "bg-white/75 text-teal-700 ring-1 ring-[var(--border-strong)] backdrop-blur hover:bg-white hover:-translate-y-0.5",
+        ghost: "bg-transparent text-ink-soft hover:bg-white/55",
       },
       size: {
-        sm: "h-10 px-4",
-        md: "h-12 px-5",
-        lg: "h-14 px-6 text-base",
+        sm: "h-10 px-4 text-sm",
+        md: "h-12 px-5 text-sm",
+        lg: "h-14 px-7 text-base",
       },
     },
     defaultVariants: {
@@ -35,3 +38,5 @@ export interface ButtonProps
 export function Button({ className, variant, size, ...props }: ButtonProps) {
   return <button className={cn(buttonVariants({ variant, size }), className)} {...props} />;
 }
+
+export { buttonVariants };

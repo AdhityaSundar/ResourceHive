@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export function Reveal({
   children,
@@ -11,6 +11,13 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
+  // Respect prefers-reduced-motion: render statically, no transform/opacity animation.
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
