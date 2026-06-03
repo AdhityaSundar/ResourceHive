@@ -3,8 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Pooled connection (Supabase pooler, port 6543) — used by the app at runtime.
+  url       = env("DATABASE_URL")
+  // Direct connection (port 5432) — used by `prisma migrate`/`db push` only.
+  directUrl = env("DIRECT_URL")
 }
 
 model Resource {
@@ -32,8 +35,11 @@ model Resource {
   eligibility String
   sourceType  String
   sourceRef   String?
-  updatedAt   DateTime @updatedAt
+  // Managed in app code via normalizeResource (preserves imported timestamps),
+  // so this is a plain column rather than @updatedAt.
+  updatedAt   DateTime
 
   @@index([category, city])
   @@index([name])
+  @@map("resources")
 }

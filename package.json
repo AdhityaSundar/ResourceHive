@@ -9,7 +9,10 @@
     "lint": "eslint",
     "extract:pdf": "node scripts/extract-resources.mjs",
     "import:sheet": "node scripts/import-spreadsheet.mjs",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
