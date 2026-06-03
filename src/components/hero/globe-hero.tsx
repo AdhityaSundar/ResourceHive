@@ -22,16 +22,21 @@ const ACCENT = "text-honey-300 accent-glow";
 const HEADLINE_CLASS =
   "font-display text-[clamp(2rem,4.6vw,4rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]";
 
-/** Initial frame: the whole sentence on one line. */
-function HeadlineOneLine() {
-  return (
-    <h1 aria-hidden="true" className={`${HEADLINE_CLASS} whitespace-nowrap`}>
-      Find the <span className={ACCENT}>help</span> you need <span className={ACCENT}>most</span>.
-    </h1>
-  );
-}
+// The headline as three atomic phrases. On a wide container they sit on one
+// line; as the container narrows they wrap cleanly to three lines.
+const HEADLINE_PHRASES = (
+  <>
+    <span className="whitespace-nowrap">
+      Find the <span className={ACCENT}>help</span>
+    </span>{" "}
+    <span className="whitespace-nowrap">you need</span>{" "}
+    <span className="whitespace-nowrap">
+      <span className={ACCENT}>most</span>.
+    </span>
+  </>
+);
 
-/** Final frame: the sentence hard-broken into three stacked lines. */
+/** Static version (reduced-motion / no-WebGL): the final stacked three lines. */
 function HeadlineStacked({ id }: { id?: string }) {
   return (
     <h1 id={id} className={HEADLINE_CLASS}>
@@ -112,12 +117,12 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
     offset: ["start start", "end end"],
   });
 
-  // Headline lives on the right. It starts as one line (initial frame) and, as
-  // the globe spins with scroll, cross-fades into the stacked three-line block
-  // (final frame). A gentle vertical parallax + a static scrim keep it readable.
+  // Headline parallax: it starts as one line on the right, then travels left
+  // with the globe while its max-width shrinks — reflowing the single line into
+  // three left-aligned lines that land on the left. (maxW values are tunable.)
   const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["6%", "-2%", "2%"]);
-  const oneLineOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
-  const stackedOpacity = useTransform(scrollYProgress, [0.35, 0.8], [0, 1]);
+  const headlineX = useTransform(scrollYProgress, [0, 1], ["0vw", "-56vw"]);
+  const headlineMaxW = useTransform(scrollYProgress, [0, 1], ["34ch", "14ch"]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
@@ -141,27 +146,25 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           <GlobeCanvas mode={mode} progress={scrollYProgress} />
         </div>
 
-        {/* Headline on the right: one line -> stacked three lines as you scroll */}
+        {/* Headline: one line on the right that travels left and breaks into
+            three lines as it narrows (driven entirely by scroll). */}
         <motion.div
           style={{ y: headlineY }}
-          className="pointer-events-none absolute inset-0 z-[3]"
+          className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-end px-6 sm:pr-[6%]"
         >
-          {/* static scrim keeps the text legible over the globe/background */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-y-0 right-0 w-[52%] bg-[radial-gradient(ellipse_60%_45%_at_72%_50%,rgba(7,33,42,0.65),transparent_72%)] blur-2xl"
-          />
-          <motion.div
-            style={{ opacity: oneLineOpacity }}
-            className="absolute inset-0 flex items-center justify-end px-6 sm:pr-[6%]"
-          >
-            <HeadlineOneLine />
-          </motion.div>
-          <motion.div
-            style={{ opacity: stackedOpacity }}
-            className="absolute inset-0 flex items-center justify-end px-6 sm:pr-[6%]"
-          >
-            <HeadlineStacked id="hero-heading" />
+          <motion.div style={{ x: headlineX }} className="relative">
+            {/* scrim rides with the text so it stays legible over the globe */}
+            <div
+              aria-hidden="true"
+              className="absolute -inset-x-12 -inset-y-8 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(7,33,42,0.72),rgba(7,33,42,0.35)_45%,transparent_72%)] blur-2xl"
+            />
+            <motion.h1
+              id="hero-heading"
+              style={{ maxWidth: headlineMaxW }}
+              className={`${HEADLINE_CLASS} w-fit`}
+            >
+              {HEADLINE_PHRASES}
+            </motion.h1>
           </motion.div>
         </motion.div>
 
