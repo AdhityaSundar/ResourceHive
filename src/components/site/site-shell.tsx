@@ -104,29 +104,50 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
       <main className="relative">{children}</main>
 
-      <footer className="border-t border-white/40 bg-white/45">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 text-sm text-[#526d72] sm:px-6 lg:grid-cols-[1.5fr_1fr_1fr] lg:px-8">
-          <div>
-            <h3 className="text-lg font-bold text-[#102a2a]">{messages.shell.brandName}</h3>
-            <p className="mt-3 max-w-lg leading-7">{messages.shell.footerDescription}</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-[#102a2a]">{messages.shell.platform}</h4>
-            <div className="mt-3 space-y-2">
-              {navLinks.slice(0, 6).map((link) => (
-                <Link key={link.href} href={link.href} className="block hover:text-teal-600">
-                  {link.label}
-                </Link>
-              ))}
+      <footer className="relative border-t border-[var(--border)] bg-white/60">
+        <div className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-50" />
+        <div className="relative mx-auto max-w-7xl px-4 py-14 text-sm text-muted sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr_1fr]">
+            <div>
+              <Link href="/" className="flex items-center gap-3">
+                <BrandMark className="size-11" />
+                <div>
+                  <div className="font-display text-xl font-semibold text-ink">{messages.shell.brandName}</div>
+                  <div className="text-xs text-muted">{messages.shell.brandSubtitle}</div>
+                </div>
+              </Link>
+              <p className="mt-4 max-w-md leading-7">{messages.shell.footerDescription}</p>
+            </div>
+            <div>
+              <h4 className="font-display text-base font-semibold text-ink">{messages.shell.platform}</h4>
+              <ul className="mt-4 space-y-2.5">
+                {navLinks.slice(0, 6).map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="transition hover:text-teal-600">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-display text-base font-semibold text-ink">{messages.shell.needSupport}</h4>
+              <div className="mt-4 space-y-3">
+                <p className="inline-flex items-center gap-2 rounded-full border border-honey-300/80 bg-honey-50 px-3 py-1.5 font-semibold text-honey-800">
+                  <span aria-hidden="true" className="grid size-5 place-items-center hex-clip bg-honey-400 text-[0.65rem] font-bold text-honey-900">!</span>
+                  {messages.shell.emergencyLine}
+                </p>
+                <p>{messages.shell.email}</p>
+                <p>{messages.shell.volunteerDesk}</p>
+              </div>
             </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-[#102a2a]">{messages.shell.needSupport}</h4>
-            <div className="mt-3 space-y-2">
-              <p>{messages.shell.emergencyLine}</p>
-              <p>{messages.shell.email}</p>
-              <p>{messages.shell.volunteerDesk}</p>
-            </div>
+
+          <div className="mt-12 flex flex-col gap-2 border-t border-[var(--border)] pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-muted">
+              © {new Date().getFullYear()} {messages.shell.brandName} · {messages.shell.brandSubtitle}
+            </p>
+            <p className="text-xs text-muted">{messages.shell.volunteerDesk}</p>
           </div>
         </div>
       </footer>

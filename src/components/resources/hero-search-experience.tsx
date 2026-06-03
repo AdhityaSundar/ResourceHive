@@ -15,6 +15,14 @@ import type { Resource, ResourceNeed, ResourceSearchResult } from "@/lib/types";
 
 const needs: ResourceNeed[] = ["food", "shelter", "jobs", "healthcare", "education"];
 
+function HexGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={cn("fill-current", className)}>
+      <path d="M6 2h12l6 10-6 10H6L0 12z" />
+    </svg>
+  );
+}
+
 export function HeroSearchExperience({
   initialResources,
   cityOptions,
@@ -64,20 +72,22 @@ export function HeroSearchExperience({
   }, [city, debouncedQuery, selectedNeeds, startSearchTransition]);
 
   return (
-    <div className="glass-panel rounded-[36px] border border-white/40 p-6 shadow-[0_30px_80px_rgba(168,85,247,0.12)] sm:p-8">
+    <div className="glass-panel rounded-[36px] p-6 sm:p-8">
       <div className="grid gap-8 lg:grid-cols-[1fr_0.88fr]">
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/55 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-fuchsia-500">
+          <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
+            <HexGlyph className="size-3 opacity-80" />
             {messages.common.searchNeeds}
           </div>
 
           <div className="relative">
-            <Search className="pointer-events-none absolute left-5 top-1/2 size-5 -translate-y-1/2 text-[#9c7aaa]" />
+            <Search className="pointer-events-none absolute left-5 top-1/2 size-5 -translate-y-1/2 text-teal-500" />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={messages.heroSearch.placeholder}
-              className="h-16 rounded-full border-white/45 bg-white/60 pl-14 text-base shadow-[0_10px_30px_rgba(168,85,247,0.08)]"
+              aria-label={messages.heroSearch.placeholder}
+              className="h-16 rounded-full border-[var(--border)] bg-white/80 pl-14 text-base text-ink shadow-e2 focus:border-teal-300 focus:ring-4 focus:ring-teal-200/50"
             />
           </div>
 
@@ -85,7 +95,8 @@ export function HeroSearchExperience({
             <select
               value={city}
               onChange={(event) => setCity(event.target.value)}
-              className="h-14 rounded-full border border-white/45 bg-white/60 px-5 text-sm text-[#372042] outline-none transition focus:border-fuchsia-300 focus:ring-4 focus:ring-fuchsia-200/50"
+              aria-label={messages.common.allLocations}
+              className="h-14 rounded-full border border-[var(--border)] bg-white/80 px-5 text-sm text-ink outline-none transition focus:border-teal-300 focus:ring-4 focus:ring-teal-200/50"
             >
               <option value="">{messages.common.allLocations}</option>
               {cityOptions.map((option) => (
@@ -95,30 +106,33 @@ export function HeroSearchExperience({
               ))}
             </select>
             {isPending ? (
-              <div className="inline-flex h-14 items-center justify-center rounded-full border border-white/45 bg-white/60 px-5 text-fuchsia-500">
+              <div className="inline-flex h-14 items-center justify-center rounded-full border border-[var(--border)] bg-white/80 px-5 text-teal-600">
                 <LoaderCircle className="size-5 animate-spin" />
               </div>
             ) : null}
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div role="group" aria-label={messages.common.searchNeeds} className="flex flex-wrap gap-2.5">
             {needs.map((need) => {
               const active = selectedNeeds.includes(need);
               return (
                 <button
                   key={need}
                   type="button"
+                  aria-pressed={active}
                   onClick={() =>
                     setSelectedNeeds((current) =>
                       active ? current.filter((item) => item !== need) : [...current, need],
                     )
                   }
-                  className={`interactive-glow rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  className={cn(
+                    "interactive-glow inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition",
                     active
-                      ? "bg-[linear-gradient(135deg,#a855f7,#ec4899)] text-white"
-                      : "bg-white/55 text-[#6b5177] hover:bg-white/75"
-                  }`}
+                      ? "bg-teal-700 text-white shadow-e2"
+                      : "border border-teal-200 bg-white/70 text-teal-700 hover:bg-teal-50",
+                  )}
                 >
+                  <HexGlyph className={cn("size-2.5", active ? "opacity-90" : "opacity-60")} />
                   {localizeNeed(need, locale)}
                 </button>
               );
@@ -128,52 +142,47 @@ export function HeroSearchExperience({
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Link
               href={resourceSearchHref}
-              className={cn(
-                "interactive-glow inline-flex h-14 items-center justify-center rounded-full bg-[linear-gradient(135deg,#a855f7,#ec4899)] px-6 text-base font-semibold text-white shadow-[0_14px_36px_rgba(168,85,247,0.18)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01]",
-                "gap-2",
-              )}
+              className="interactive-glow inline-flex h-14 items-center justify-center gap-2 rounded-full bg-teal-700 px-6 text-base font-semibold text-white shadow-e2 transition-all duration-200 hover:-translate-y-0.5 hover:bg-teal-600"
             >
               {messages.common.exploreResults}
               <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/map"
-              className="interactive-glow inline-flex h-14 items-center justify-center rounded-full bg-white/55 px-6 text-base font-semibold text-[#4c3559] ring-1 ring-white/50 backdrop-blur transition-all duration-200 hover:scale-[1.01] hover:bg-white/75"
+              className="interactive-glow inline-flex h-14 items-center justify-center rounded-full bg-white/75 px-6 text-base font-semibold text-teal-700 ring-1 ring-[var(--border-strong)] backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-white"
             >
               {messages.common.openMap}
             </Link>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4" aria-live="polite">
           {results.length > 0 ? (
             results.map((resource) => (
               <Link
                 key={resource.id}
                 href={`/resource/${resource.id}`}
-                className="glass-panel block rounded-[28px] border border-white/45 p-5 transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(168,85,247,0.12)]"
+                className="group block rounded-[28px] border border-[var(--border)] bg-white/80 p-5 shadow-e2 transition hover:-translate-y-1 hover:shadow-e3"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-lg font-bold text-[#2a1833]">{resource.name}</p>
-                    <p className="mt-1 text-sm text-[#8a7696]">{resource.city}</p>
-                    <p className="mt-3 max-w-md text-sm leading-6 text-[#7c6b88]">{resource.description}</p>
+                    <p className="text-lg font-bold text-ink">{resource.name}</p>
+                    <p className="mt-1 text-sm text-muted">{resource.city}</p>
+                    <p className="mt-3 max-w-md text-sm leading-6 text-muted">{resource.description}</p>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      <Badge className="border-emerald-100 bg-emerald-50/80 text-emerald-600">{messages.common.open}</Badge>
-                      <Badge className="border-amber-100 bg-amber-50/80 text-amber-600">{messages.common.free}</Badge>
+                      <Badge tone="open" hex>{messages.common.open}</Badge>
+                      <Badge tone="free">{messages.common.free}</Badge>
                       {resource.services.slice(0, 2).map((service) => (
-                        <Badge key={service}>{service}</Badge>
+                        <Badge key={service} tone="neutral">{service}</Badge>
                       ))}
                     </div>
                   </div>
-                  <Badge className="border-fuchsia-200 bg-fuchsia-50/80 text-fuchsia-500">
-                    {localizeCategory(resource.category, locale)}
-                  </Badge>
+                  <Badge tone="teal">{localizeCategory(resource.category, locale)}</Badge>
                 </div>
               </Link>
             ))
           ) : (
-            <div className="glass-panel rounded-[28px] border border-dashed border-fuchsia-200 bg-white/50 p-6 text-sm text-[#7c6b88]">
+            <div className="rounded-[28px] border border-dashed border-teal-200 bg-white/60 p-6 text-sm text-muted">
               {messages.common.noHeroResults}
             </div>
           )}
