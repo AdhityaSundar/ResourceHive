@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
-import { Fraunces, Public_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Plus_Jakarta_Sans } from "next/font/google";
 
 import { AppProviders } from "@/components/providers/app-providers";
 import { SiteShell } from "@/components/site/site-shell";
 
 import "./globals.css";
 
-// Display: Fraunces — a warm, soft old-style serif with optical sizing.
-// The SOFT axis rounds terminals for a more human, welcoming feel.
-const fraunces = Fraunces({
+// Display: Bricolage Grotesque — a warm, characterful contemporary grotesque.
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-bricolage",
   display: "swap",
-  axes: ["opsz", "SOFT"],
 });
 
-// Body/UI: Public Sans — the USWDS accessibility-first workhorse.
-const publicSans = Public_Sans({
+// Body/UI: Plus Jakarta Sans — a clean, friendly geometric sans.
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-public-sans",
+  variable: "--font-jakarta",
   display: "swap",
 });
 
@@ -37,7 +35,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${publicSans.variable} h-full scroll-smooth antialiased`}
+      className={`${bricolage.variable} ${jakarta.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full font-sans" suppressHydrationWarning>
         <AppProviders>

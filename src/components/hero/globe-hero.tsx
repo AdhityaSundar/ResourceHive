@@ -1,37 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowRight, MapPin } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 import { EmergencyBanner } from "@/components/site/emergency-banner";
+import { Bee } from "@/components/hero/bee";
 import { Button } from "@/components/ui/button";
 import { useGlobeCapability } from "@/components/hero/use-globe-capability";
 import { GlobeStatic } from "@/components/hero/globe-static";
-import type { UserPos } from "@/components/hero/globe-canvas";
-import type { GlobeMarker } from "@/lib/geo";
 
 const GlobeCanvas = dynamic(
   () => import("@/components/hero/globe-canvas").then((m) => m.GlobeCanvas),
   { ssr: false, loading: () => null },
 );
 
-const HEADLINE_PRE = "Find the ";
-const HEADLINE_ACCENT = "help";
-const HEADLINE_POST = " you need most.";
-
 function Headline({ id }: { id?: string }) {
   return (
     <h1
       id={id}
-      className="font-display text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[0.98] tracking-tight text-white text-balance drop-shadow-[0_2px_20px_rgba(7,33,42,0.6)]"
+      className="font-display text-[clamp(2.5rem,5.4vw,4.75rem)] font-bold leading-[1.02] tracking-tight text-ink text-balance"
     >
-      {HEADLINE_PRE}
-      <span className="text-honey-300">{HEADLINE_ACCENT}</span>
-      {HEADLINE_POST}
+      Find the <span className="text-orange-600">help</span> you need most.
     </h1>
   );
 }
@@ -55,61 +47,43 @@ function HeroActions() {
   );
 }
 
-/** Deep teal backdrop: honeycomb texture, atmospheric pooling, faint starfield. */
-function HeroBackdrop() {
+/** Warm sunrise backdrop: amber on the left (behind the globe), cream on the
+ *  right (where the text lands, keeping dark ink AA-legible). */
+function WarmBackdrop() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-teal-900">
-      <div className="honeycomb-texture-dark absolute inset-0 opacity-60" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_38%,rgba(14,124,134,0.45),transparent_55%),radial-gradient(circle_at_30%_80%,rgba(224,133,12,0.16),transparent_45%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,#ffffff22_0.6px,transparent_1.2px),radial-gradient(circle_at_82%_64%,#ffffff18_0.6px,transparent_1.2px),radial-gradient(circle_at_46%_88%,#ffffff14_0.5px,transparent_1px)] bg-[size:240px_240px,300px_300px,180px_180px]" />
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(100deg,#f1a73a_0%,#fbd182_34%,#fff1d8_72%,#fffaf0_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_46%,rgba(244,176,63,0.55),transparent_52%)]" />
+      <div className="honeycomb-texture-light absolute inset-0 opacity-50" />
     </div>
   );
 }
 
-/** Keyboard/AT-accessible list of the same destinations as the on-globe pins. */
-function AccessibleMarkerList({ markers }: { markers: GlobeMarker[] }) {
-  return (
-    <nav aria-label="Service locations" className="sr-only">
-      <ul>
-        {markers.map((marker) => (
-          <li key={marker.city}>
-            <Link href={marker.href}>
-              {marker.label}: {marker.count} resources
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-
 /**
- * Animated, scroll-pinned hero. Split into its own component so the
- * useScroll target ref is only ever created while the pinned section is
- * actually mounted in the DOM (avoids framer-motion's "ref not hydrated").
+ * Animated, scroll-pinned hero. In its own component so the useScroll target
+ * ref is only ever created while the pinned section is mounted.
  */
-function PinnedGlobeHero({
-  mode,
-  markers,
-  userPos,
-}: {
-  mode: "full" | "lite";
-  markers: GlobeMarker[];
-  userPos: UserPos;
-}) {
-  const router = useRouter();
+function PinnedGlobeHero({ mode }: { mode: "full" | "lite" }) {
   const outerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: outerRef,
     offset: ["start start", "end end"],
   });
 
-  // Headline choreography: right (behind) -> arc -> left (in front).
-  const xBack = useTransform(scrollYProgress, [0, 1], ["34%", "-28%"]);
-  const xFront = useTransform(scrollYProgress, [0, 1], ["30%", "-30%"]);
-  const arcY = useTransform(scrollYProgress, [0, 0.5, 1], ["6%", "-4%", "2%"]);
-  const opacityBack = useTransform(scrollYProgress, [0, 0.42, 0.55], [1, 1, 0]);
-  const opacityFront = useTransform(scrollYProgress, [0.48, 0.62, 1], [0, 1, 1]);
+  // Globe: shrinks and drifts left as you scroll.
+  const globeScale = useTransform(scrollYProgress, [0, 1], [1, 0.52]);
+  const globeX = useTransform(scrollYProgress, [0, 1], ["0%", "-23%"]);
+
+  // Headline block: travels in from the left and resolves on the right.
+  const textX = useTransform(scrollYProgress, [0, 0.9, 1], ["-46vw", "0vw", "0vw"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.28, 0.72], [0, 0.5, 1]);
+
+  // Bee: flies from top-right to bottom-left across the globe.
+  const beeLeft = useTransform(scrollYProgress, [0, 1], ["68%", "24%"]);
+  const beeTop = useTransform(scrollYProgress, [0, 1], ["12%", "78%"]);
+  const beeRotate = useTransform(scrollYProgress, [0, 1], [22, -12]);
+
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
   return (
     <section
@@ -119,124 +93,91 @@ function PinnedGlobeHero({
       style={{ height: "280vh" }}
     >
       <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
-        <HeroBackdrop />
+        <WarmBackdrop />
 
         {/* Urgent banner stays pinned + visible through the whole sequence */}
         <div className="relative z-30 pt-20">
           <EmergencyBanner />
         </div>
 
-        {/* Headline BEHIND the globe (peeks out right, occluded by the sphere) */}
+        {/* Globe (shrinks + moves left) with the bee flying across it */}
         <motion.div
-          aria-hidden="true"
-          style={{ x: xBack, y: arcY, opacity: opacityBack }}
-          className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center px-6"
+          style={{ scale: globeScale, x: globeX }}
+          className="absolute inset-0 z-[1] origin-center"
         >
-          <div className="w-full max-w-2xl">
-            <Headline />
+          <div className="absolute inset-0">
+            <GlobeCanvas mode={mode} progress={scrollYProgress} />
+          </div>
+          <motion.div
+            aria-hidden="true"
+            style={{ left: beeLeft, top: beeTop, rotate: beeRotate }}
+            className="absolute z-[2] w-9 sm:w-11"
+          >
+            <Bee className="w-full animate-[float_2.6s_ease-in-out_infinite]" />
+          </motion.div>
+        </motion.div>
+
+        {/* Headline block travels left -> right, resolving on the right */}
+        <motion.div
+          style={{ x: textX, opacity: textOpacity }}
+          className="absolute inset-y-0 right-[6%] z-[3] flex max-w-[42ch] flex-col justify-center"
+        >
+          <Headline id="hero-heading" />
+          <p className="mt-5 max-w-md text-lg leading-8 text-ink-soft">
+            Real people, real resources, updated daily. Find food, shelter, jobs, and
+            care near you.
+          </p>
+          <div className="mt-8">
+            <HeroActions />
           </div>
         </motion.div>
 
-        {/* Globe */}
-        <div className="absolute inset-0 z-[2]">
-          <GlobeCanvas
-            mode={mode}
-            markers={markers}
-            progress={scrollYProgress}
-            userPos={userPos}
-            onSelectCity={(href) => router.push(href)}
-          />
-        </div>
-
-        {/* Headline IN FRONT of the globe (resolves on the left, fully legible) */}
-        <motion.div
-          style={{ x: xFront, y: arcY, opacity: opacityFront }}
-          className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center px-6"
+        {/* Scroll hint */}
+        <motion.p
+          style={{ opacity: hintOpacity }}
+          className="absolute inset-x-0 bottom-8 z-30 text-center text-xs font-semibold uppercase tracking-[0.24em] text-honey-800/70"
         >
-          <div className="w-full max-w-2xl">
-            <Headline id="hero-heading" />
-          </div>
-        </motion.div>
-
-        {/* Primary actions — usable at every stage */}
-        <div className="absolute inset-x-0 bottom-10 z-30 mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:px-6 lg:px-8">
-          <p className="max-w-md text-base leading-7 text-teal-50/80">
-            Real people, real resources, updated daily.
-          </p>
-          <HeroActions />
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-teal-100/50">
-            Scroll to explore the hive
-          </p>
-        </div>
+          Scroll to explore the hive
+        </motion.p>
       </div>
-
-      <AccessibleMarkerList markers={markers} />
     </section>
   );
 }
 
-/** Static / reduced-motion / no-WebGL / first-paint layout. */
-function StaticGlobeHero({ markers }: { markers: GlobeMarker[] }) {
+/** Static / reduced-motion / no-WebGL / first-paint layout (mirrored split). */
+function StaticGlobeHero() {
   return (
-    <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-teal-900">
-      <HeroBackdrop />
+    <section aria-labelledby="hero-heading" className="relative overflow-hidden">
+      <WarmBackdrop />
       <EmergencyBanner />
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
-        <div className="max-w-xl">
+        <div className="order-2 flex justify-center lg:order-1 lg:justify-start">
+          <GlobeStatic />
+        </div>
+        <div className="order-1 max-w-xl lg:order-2">
           <Headline id="hero-heading" />
-          <p className="mt-6 max-w-lg text-lg leading-8 text-teal-50/85">
-            Real people, real resources, updated daily. Browse food, shelter, jobs, and
+          <p className="mt-6 max-w-lg text-lg leading-8 text-ink-soft">
+            Real people, real resources, updated daily. Find food, shelter, jobs, and
             care near you.
           </p>
           <div className="mt-8">
             <HeroActions />
           </div>
         </div>
-        <div className="flex justify-center lg:justify-end">
-          <GlobeStatic />
-        </div>
       </div>
-      <AccessibleMarkerList markers={markers} />
     </section>
   );
 }
 
-export function GlobeHero({ markers }: { markers: GlobeMarker[] }) {
+export function GlobeHero() {
   const prefersReducedMotion = useReducedMotion();
   const { mode, mounted } = useGlobeCapability();
-  const [userPos, setUserPos] = useState<UserPos>(null);
-
-  // Non-blocking geolocation. Used only client-side to orient the globe; never
-  // stored or transmitted. Default global drift if denied/unavailable.
-  useEffect(() => {
-    if (mode === "static") return;
-    if (typeof navigator === "undefined" || !("geolocation" in navigator)) return;
-
-    let cancelled = false;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (!cancelled) {
-          setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        }
-      },
-      () => {
-        /* denied / dismissed / unavailable — keep default drift, no nagging */
-      },
-      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600_000 },
-    );
-
-    return () => {
-      cancelled = true;
-    };
-  }, [mode]);
 
   const animated = mounted && mode !== "static" && !prefersReducedMotion;
 
   if (!animated) {
-    return <StaticGlobeHero markers={markers} />;
+    return <StaticGlobeHero />;
   }
 
-  return (
-    <PinnedGlobeHero mode={mode === "lite" ? "lite" : "full"} markers={markers} userPos={userPos} />
-  );
+  return <PinnedGlobeHero mode={mode === "lite" ? "lite" : "full"} />;
 }

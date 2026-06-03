@@ -84,8 +84,8 @@
   --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
 
-  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -95,7 +95,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   /* clip (not hidden) prevents horizontal overflow without creating a scroll
      container, so position: sticky (the globe hero pin) keeps working. */
   overflow-x: clip;
@@ -111,9 +111,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-  font-optical-sizing: auto;
-  letter-spacing: -0.01em;
+  font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* =========================================================================

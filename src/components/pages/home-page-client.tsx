@@ -8,10 +8,8 @@ import { FeaturedCategories } from "@/components/home/featured-categories";
 import { FeaturedResourceCard } from "@/components/home/featured-resource-card";
 import { VolunteerDonate } from "@/components/home/volunteer-donate";
 import { HeroSearchExperience } from "@/components/resources/hero-search-experience";
-import { RecommendationBuilder } from "@/components/resources/recommendation-builder";
 import { HoneycombDivider } from "@/components/site/honeycomb-divider";
 import { SectionHeading } from "@/components/site/section-heading";
-import { buildMarkersFromResources } from "@/lib/geo";
 import type { Resource } from "@/lib/types";
 
 export function HomePageClient({
@@ -25,7 +23,6 @@ export function HomePageClient({
 }) {
   const { messages } = useLocale();
   const featuredResources = resources.slice(0, 3);
-  const markers = buildMarkersFromResources(resources);
 
   const stats = [
     { label: messages.home.statsResources, value: resources.length },
@@ -35,7 +32,7 @@ export function HomePageClient({
 
   return (
     <div className="pb-20">
-      <GlobeHero markers={markers} />
+      <GlobeHero />
 
       <Reveal className="relative mx-auto mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
         <HeroSearchExperience initialResources={resources} cityOptions={cityOptions} />
@@ -98,10 +95,6 @@ export function HomePageClient({
             </div>
           ))}
         </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <RecommendationBuilder />
       </section>
 
       <Reveal className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
