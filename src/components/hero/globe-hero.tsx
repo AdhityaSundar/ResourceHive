@@ -10,6 +10,7 @@ import { EmergencyBanner } from "@/components/site/emergency-banner";
 import { Button } from "@/components/ui/button";
 import { useGlobeCapability } from "@/components/hero/use-globe-capability";
 import { GlobeStatic } from "@/components/hero/globe-static";
+import { HoneycombSpotlight } from "@/components/hero/honeycomb-spotlight";
 import type { GlobeMarker } from "@/lib/geo";
 
 const GlobeCanvas = dynamic(
@@ -21,9 +22,10 @@ function Headline({ id }: { id?: string }) {
   return (
     <h1
       id={id}
-      className="font-display text-[clamp(2.5rem,5.6vw,4.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-white text-balance drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]"
+      className="font-display text-[clamp(2.5rem,5.6vw,4.75rem)] font-extrabold leading-[1.05] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]"
     >
-      Find the <span className="text-honey-300">help</span> you need most.
+      Find the <span className="text-honey-300 accent-glow">help</span> you need{" "}
+      <span className="text-honey-300 accent-glow">most</span>.
     </h1>
   );
 }
@@ -32,13 +34,17 @@ function HeroActions() {
   return (
     <div className="flex flex-wrap gap-3">
       <Link href="/resources">
-        <Button size="lg" className="gap-2">
+        <Button size="lg" className="gap-2 px-8 text-base shadow-e4">
           Browse directory
           <ArrowRight className="size-4" />
         </Button>
       </Link>
       <Link href="/map">
-        <Button variant="secondary" size="lg" className="gap-2">
+        <Button
+          variant="secondary"
+          size="lg"
+          className="gap-2 bg-white px-8 text-base text-teal-800 shadow-e3 hover:bg-white"
+        >
           <MapPin className="size-4" />
           Open map
         </Button>
@@ -76,6 +82,7 @@ function HeroBackdrop() {
       <div className="honeycomb-texture-dark absolute inset-0 opacity-60" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_38%,rgba(14,124,134,0.45),transparent_55%),radial-gradient(circle_at_30%_80%,rgba(224,133,12,0.16),transparent_45%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,#ffffff22_0.6px,transparent_1.2px),radial-gradient(circle_at_82%_64%,#ffffff18_0.6px,transparent_1.2px),radial-gradient(circle_at_46%_88%,#ffffff14_0.5px,transparent_1px)] bg-[size:240px_240px,300px_300px,180px_180px]" />
+      <HoneycombSpotlight />
     </div>
   );
 }
@@ -114,17 +121,17 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           <EmergencyBanner />
         </div>
 
-        {/* Globe */}
-        <div className="absolute inset-0 z-[1]">
+        {/* Globe — nudged down so it doesn't crowd the urgent banner */}
+        <div className="absolute inset-0 z-[1] translate-y-[7vh]">
           <GlobeCanvas mode={mode} progress={scrollYProgress} />
         </div>
 
-        {/* Headline — always in front of the globe, fully readable */}
+        {/* Headline — always in front of the globe, wraps to multiple lines */}
         <motion.div
           style={{ x: headlineX, y: headlineY }}
           className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center px-6"
         >
-          <div className="relative w-full max-w-2xl">
+          <div className="relative w-full max-w-lg">
             {/* traveling scrim keeps the text legible over any background */}
             <div
               aria-hidden="true"
@@ -135,7 +142,7 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
         </motion.div>
 
         {/* Actions + locations — usable at every stage */}
-        <div className="absolute inset-x-0 bottom-8 z-30 mx-auto flex max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-x-0 bottom-12 z-30 mx-auto flex max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:px-8">
           <p className="max-w-md text-base leading-7 text-teal-50/85">
             Real people, real resources, updated daily.
           </p>

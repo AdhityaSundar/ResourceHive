@@ -44,5 +44,6 @@ yarn-error.log*
 next-env.d.ts
 
 # local dev artifacts
+.codex-*.log
 dev-server.log
 home.html
