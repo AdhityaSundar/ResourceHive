@@ -31,7 +31,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-cream text-ink">
+    <div className="relative min-h-screen overflow-x-clip bg-cream text-ink">
       <div className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-70" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,_rgba(14,124,134,0.12),_transparent_52%)]" />
       <header className="sticky top-0 z-40 border-b border-white/40 bg-white/55 backdrop-blur-2xl">

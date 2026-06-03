@@ -83,12 +83,21 @@ function AccessibleMarkerList({ markers }: { markers: GlobeMarker[] }) {
   );
 }
 
-export function GlobeHero({ markers }: { markers: GlobeMarker[] }) {
+/**
+ * Animated, scroll-pinned hero. Split into its own component so the
+ * useScroll target ref is only ever created while the pinned section is
+ * actually mounted in the DOM (avoids framer-motion's "ref not hydrated").
+ */
+function PinnedGlobeHero({
+  mode,
+  markers,
+  userPos,
+}: {
+  mode: "full" | "lite";
+  markers: GlobeMarker[];
+  userPos: UserPos;
+}) {
   const router = useRouter();
-  const prefersReducedMotion = useReducedMotion();
-  const { mode, mounted } = useGlobeCapability();
-  const [userPos, setUserPos] = useState<UserPos>(null);
-
   const outerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: outerRef,
@@ -102,59 +111,6 @@ export function GlobeHero({ markers }: { markers: GlobeMarker[] }) {
   const opacityBack = useTransform(scrollYProgress, [0, 0.42, 0.55], [1, 1, 0]);
   const opacityFront = useTransform(scrollYProgress, [0.48, 0.62, 1], [0, 1, 1]);
 
-  // Non-blocking geolocation. Used only client-side to orient the globe; never
-  // stored or transmitted. Default global drift if denied/unavailable.
-  useEffect(() => {
-    if (mode === "static") return;
-    if (typeof navigator === "undefined" || !("geolocation" in navigator)) return;
-
-    let cancelled = false;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (!cancelled) {
-          setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        }
-      },
-      () => {
-        /* denied / dismissed / unavailable — keep default drift, no nagging */
-      },
-      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600_000 },
-    );
-
-    return () => {
-      cancelled = true;
-    };
-  }, [mode]);
-
-  const animated = mounted && mode !== "static" && !prefersReducedMotion;
-
-  // -------- Static / reduced-motion / no-WebGL / first-paint layout --------
-  if (!animated) {
-    return (
-      <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-teal-900">
-        <HeroBackdrop />
-        <EmergencyBanner />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
-          <div className="max-w-xl">
-            <Headline id="hero-heading" />
-            <p className="mt-6 max-w-lg text-lg leading-8 text-teal-50/85">
-              Real people, real resources, updated daily. Browse food, shelter, jobs,
-              and care near you.
-            </p>
-            <div className="mt-8">
-              <HeroActions />
-            </div>
-          </div>
-          <div className="flex justify-center lg:justify-end">
-            <GlobeStatic />
-          </div>
-        </div>
-        <AccessibleMarkerList markers={markers} />
-      </section>
-    );
-  }
-
-  // -------- Animated, scroll-pinned hero --------
   return (
     <section
       ref={outerRef}
@@ -184,7 +140,7 @@ export function GlobeHero({ markers }: { markers: GlobeMarker[] }) {
         {/* Globe */}
         <div className="absolute inset-0 z-[2]">
           <GlobeCanvas
-            mode={mode === "lite" ? "lite" : "full"}
+            mode={mode}
             markers={markers}
             progress={scrollYProgress}
             userPos={userPos}
@@ -216,5 +172,71 @@ export function GlobeHero({ markers }: { markers: GlobeMarker[] }) {
 
       <AccessibleMarkerList markers={markers} />
     </section>
+  );
+}
+
+/** Static / reduced-motion / no-WebGL / first-paint layout. */
+function StaticGlobeHero({ markers }: { markers: GlobeMarker[] }) {
+  return (
+    <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-teal-900">
+      <HeroBackdrop />
+      <EmergencyBanner />
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
+        <div className="max-w-xl">
+          <Headline id="hero-heading" />
+          <p className="mt-6 max-w-lg text-lg leading-8 text-teal-50/85">
+            Real people, real resources, updated daily. Browse food, shelter, jobs, and
+            care near you.
+          </p>
+          <div className="mt-8">
+            <HeroActions />
+          </div>
+        </div>
+        <div className="flex justify-center lg:justify-end">
+          <GlobeStatic />
+        </div>
+      </div>
+      <AccessibleMarkerList markers={markers} />
+    </section>
+  );
+}
+
+export function GlobeHero({ markers }: { markers: GlobeMarker[] }) {
+  const prefersReducedMotion = useReducedMotion();
+  const { mode, mounted } = useGlobeCapability();
+  const [userPos, setUserPos] = useState<UserPos>(null);
+
+  // Non-blocking geolocation. Used only client-side to orient the globe; never
+  // stored or transmitted. Default global drift if denied/unavailable.
+  useEffect(() => {
+    if (mode === "static") return;
+    if (typeof navigator === "undefined" || !("geolocation" in navigator)) return;
+
+    let cancelled = false;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (!cancelled) {
+          setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        }
+      },
+      () => {
+        /* denied / dismissed / unavailable — keep default drift, no nagging */
+      },
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600_000 },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mode]);
+
+  const animated = mounted && mode !== "static" && !prefersReducedMotion;
+
+  if (!animated) {
+    return <StaticGlobeHero markers={markers} />;
+  }
+
+  return (
+    <PinnedGlobeHero mode={mode === "lite" ? "lite" : "full"} markers={markers} userPos={userPos} />
   );
 }
