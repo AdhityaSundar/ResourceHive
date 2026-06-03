@@ -18,17 +18,28 @@ const GlobeCanvas = dynamic(
   { ssr: false, loading: () => null },
 );
 
-function Headline({ id }: { id?: string }) {
+const ACCENT = "text-honey-300 accent-glow";
+const HEADLINE_CLASS =
+  "font-display text-[clamp(2rem,4.6vw,4rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]";
+
+/** Initial frame: the whole sentence on one line. */
+function HeadlineOneLine() {
   return (
-    <h1
-      id={id}
-      className="font-display text-[clamp(2.25rem,5.2vw,4.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]"
-    >
-      Find the <span className="text-honey-300 accent-glow">help</span>
+    <h1 aria-hidden="true" className={`${HEADLINE_CLASS} whitespace-nowrap`}>
+      Find the <span className={ACCENT}>help</span> you need <span className={ACCENT}>most</span>.
+    </h1>
+  );
+}
+
+/** Final frame: the sentence hard-broken into three stacked lines. */
+function HeadlineStacked({ id }: { id?: string }) {
+  return (
+    <h1 id={id} className={HEADLINE_CLASS}>
+      Find the <span className={ACCENT}>help</span>
       <br />
       you need
       <br />
-      <span className="text-honey-300 accent-glow">most</span>.
+      <span className={ACCENT}>most</span>.
     </h1>
   );
 }
@@ -101,9 +112,12 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
     offset: ["start start", "end end"],
   });
 
-  // Headline sits as a left-anchored, multi-line block with a gentle vertical
-  // parallax. Always in front of the globe; a soft scrim keeps it readable.
+  // Headline lives on the right. It starts as one line (initial frame) and, as
+  // the globe spins with scroll, cross-fades into the stacked three-line block
+  // (final frame). A gentle vertical parallax + a static scrim keep it readable.
   const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["6%", "-2%", "2%"]);
+  const oneLineOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const stackedOpacity = useTransform(scrollYProgress, [0.35, 0.8], [0, 1]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
@@ -127,19 +141,28 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           <GlobeCanvas mode={mode} progress={scrollYProgress} />
         </div>
 
-        {/* Headline — left-anchored, hard-broken into lines, always readable */}
+        {/* Headline on the right: one line -> stacked three lines as you scroll */}
         <motion.div
           style={{ y: headlineY }}
-          className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-start px-6 sm:pl-[6%]"
+          className="pointer-events-none absolute inset-0 z-[3]"
         >
-          <div className="relative text-left">
-            {/* traveling scrim keeps the text legible over any background */}
-            <div
-              aria-hidden="true"
-              className="absolute -inset-x-16 -inset-y-12 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(7,33,42,0.72),rgba(7,33,42,0.35)_45%,transparent_72%)] blur-2xl"
-            />
-            <Headline id="hero-heading" />
-          </div>
+          {/* static scrim keeps the text legible over the globe/background */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 w-[52%] bg-[radial-gradient(ellipse_60%_45%_at_72%_50%,rgba(7,33,42,0.65),transparent_72%)] blur-2xl"
+          />
+          <motion.div
+            style={{ opacity: oneLineOpacity }}
+            className="absolute inset-0 flex items-center justify-end px-6 sm:pr-[6%]"
+          >
+            <HeadlineOneLine />
+          </motion.div>
+          <motion.div
+            style={{ opacity: stackedOpacity }}
+            className="absolute inset-0 flex items-center justify-end px-6 sm:pr-[6%]"
+          >
+            <HeadlineStacked id="hero-heading" />
+          </motion.div>
         </motion.div>
 
         {/* Actions + locations — usable at every stage */}
@@ -171,7 +194,7 @@ function StaticGlobeHero({ markers }: { markers: GlobeMarker[] }) {
       <EmergencyBanner />
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
         <div className="max-w-xl">
-          <Headline id="hero-heading" />
+          <HeadlineStacked id="hero-heading" />
           <p className="mt-6 max-w-lg text-lg leading-8 text-teal-50/85">
             Real people, real resources, updated daily. Find food, shelter, jobs, and
             care near you.
