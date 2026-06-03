@@ -1,18 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { useLocale } from "@/components/providers/locale-provider";
 import { Reveal } from "@/components/motion/reveal";
+import { GlobeHero } from "@/components/hero/globe-hero";
 import { HeroSearchExperience } from "@/components/resources/hero-search-experience";
 import { RecommendationBuilder } from "@/components/resources/recommendation-builder";
-import { BrandMark } from "@/components/site/brand-mark";
-import { EmergencyBanner } from "@/components/site/emergency-banner";
 import { SectionHeading } from "@/components/site/section-heading";
-import { Button } from "@/components/ui/button";
 import { resourceCategories } from "@/lib/categories";
 import { localizeCategory, localizeCategoryDescription } from "@/lib/i18n";
+import { buildMarkersFromResources } from "@/lib/geo";
 import type { Resource } from "@/lib/types";
 
 export function HomePageClient({
@@ -26,67 +24,15 @@ export function HomePageClient({
 }) {
   const { locale, messages } = useLocale();
   const featuredResources = resources.slice(0, 3);
+  const markers = buildMarkersFromResources(resources);
 
   return (
     <div className="pb-20">
-      <EmergencyBanner />
+      <GlobeHero markers={markers} />
 
-      <section className="relative mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 lg:px-8 lg:pt-16">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_20%_10%,rgba(34,197,94,0.16),transparent_32%),radial-gradient(circle_at_80%_16%,rgba(14,165,233,0.14),transparent_26%),radial-gradient(circle_at_58%_72%,rgba(250,204,21,0.12),transparent_28%)]" />
-        <div className="relative grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-          <Reveal className="max-w-xl">
-            <div className="inline-flex items-center gap-3 rounded-full border border-white/50 bg-white/60 px-4 py-2 text-sm font-semibold text-emerald-600 shadow-[0_18px_50px_rgba(14,165,233,0.12)] backdrop-blur">
-              <BrandMark className="size-10 sm:size-11" priority />
-              {messages.home.heroBadge}
-            </div>
-            <h1 className="mt-8 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight text-[#102a2a] sm:text-6xl lg:text-7xl">
-              {messages.home.heroTitleStart}{" "}
-              <span className="bg-[linear-gradient(135deg,#16a34a,#0ea5e9)] bg-clip-text text-transparent">
-                {messages.home.heroTitleAccent}
-              </span>
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#526d72] sm:text-lg">
-              {messages.home.heroDescription}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/resources">
-                <Button size="lg" className="gap-2">
-                  {messages.home.browseDirectory}
-                  <ArrowRight className="size-4" />
-                </Button>
-              </Link>
-              <Link href="/map">
-                <Button variant="secondary" size="lg">
-                  {messages.common.openMap}
-                </Button>
-              </Link>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.08} className="relative">
-            <div className="glass-panel rounded-[36px] border border-white/40 p-4 sm:p-5">
-              <div className="grid gap-3 sm:grid-cols-3">
-                {featuredResources.map((resource) => (
-                  <div key={resource.id} className="rounded-[28px] border border-white/40 bg-white/60 p-4 shadow-[0_20px_40px_rgba(14,165,233,0.08)]">
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-600">{messages.home.previewLabel}</p>
-                    <h3 className="mt-3 text-lg font-bold text-[#102a2a]">{resource.name}</h3>
-                    <p className="mt-2 text-sm leading-6 text-[#526d72]">{resource.description}</p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{messages.common.open}</span>
-                      <span className="rounded-full bg-yellow-50 px-3 py-1 text-xs font-semibold text-yellow-700">{messages.common.free}</span>
-                    </div>
-                    <p className="mt-4 text-sm font-medium text-[#647b80]">{resource.city}, {resource.state}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-        </div>
-
-        <Reveal delay={0.12} className="relative mx-auto mt-10 max-w-7xl">
-          <HeroSearchExperience initialResources={resources} cityOptions={cityOptions} />
-        </Reveal>
-      </section>
+      <Reveal className="relative mx-auto mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <HeroSearchExperience initialResources={resources} cityOptions={cityOptions} />
+      </Reveal>
 
       <Reveal className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-4 sm:grid-cols-3">
@@ -96,8 +42,8 @@ export function HomePageClient({
             { label: messages.home.statsPartners, value: `${partnerCount}` },
           ].map((item) => (
             <div key={item.label} className="glass-panel rounded-[28px] p-5 transition hover:-translate-y-1">
-              <div className="text-3xl font-black text-[#102a2a]">{item.value}</div>
-              <p className="mt-1 text-sm text-[#647b80]">{item.label}</p>
+              <div className="font-display text-3xl font-semibold text-ink">{item.value}</div>
+              <p className="mt-1 text-sm text-muted">{item.label}</p>
             </div>
           ))}
         </div>
@@ -112,16 +58,16 @@ export function HomePageClient({
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {resourceCategories.map((item) => (
             <div key={item.category} className="glass-panel relative overflow-hidden rounded-[32px] p-6 transition hover:-translate-y-1">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.08),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.08),transparent_32%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,124,134,0.08),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(224,133,12,0.08),transparent_32%)]" />
               <div className="relative">
-                <div className="inline-flex rounded-2xl border border-white/50 bg-white/65 p-3 text-sky-600 shadow-[0_18px_40px_rgba(14,165,233,0.08)]">
+                <div className="inline-flex rounded-2xl border border-white/50 bg-white/65 p-3 text-teal-600 shadow-[0_18px_40px_rgba(14,124,134,0.08)]">
                   <item.icon className="size-5" />
                 </div>
-                <h3 className="mt-5 text-2xl font-bold text-[#102a2a]">{localizeCategory(item.category, locale)}</h3>
-                <p className="mt-3 text-sm leading-7 text-[#526d72]">
+                <h3 className="mt-5 font-display text-2xl font-semibold text-ink">{localizeCategory(item.category, locale)}</h3>
+                <p className="mt-3 text-sm leading-7 text-muted">
                   {localizeCategoryDescription(item.category, locale)}
                 </p>
-                <Link href={`/resources?category=${item.category}`} className="mt-5 inline-flex text-sm font-semibold text-emerald-600 transition hover:text-sky-600">
+                <Link href={`/resources?category=${item.category}`} className="mt-5 inline-flex text-sm font-semibold text-teal-600 transition hover:text-honey-600">
                   {messages.home.exploreCategory} {localizeCategory(item.category, locale)}
                 </Link>
               </div>
@@ -139,12 +85,12 @@ export function HomePageClient({
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {featuredResources.map((resource) => (
             <div key={resource.id} className="glass-panel rounded-[32px] p-6 transition hover:-translate-y-1">
-              <p className="text-sm font-bold uppercase tracking-[0.28em] text-emerald-600">
+              <p className="text-sm font-bold uppercase tracking-[0.28em] text-teal-600">
                 {localizeCategory(resource.category, locale)}
               </p>
-              <h3 className="mt-4 text-2xl font-bold text-[#102a2a]">{resource.name}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#526d72]">{resource.description}</p>
-              <p className="mt-6 text-sm font-medium text-[#647b80]">{resource.city}, {resource.state}</p>
+              <h3 className="mt-4 font-display text-2xl font-semibold text-ink">{resource.name}</h3>
+              <p className="mt-3 text-sm leading-7 text-muted">{resource.description}</p>
+              <p className="mt-6 text-sm font-medium text-ink-soft">{resource.city}, {resource.state}</p>
             </div>
           ))}
         </div>
@@ -163,8 +109,8 @@ export function HomePageClient({
             { title: messages.home.growthFeatures, text: messages.home.growthFeaturesText },
           ].map((item) => (
             <div key={item.title} className="glass-panel rounded-[30px] p-6 transition hover:-translate-y-1">
-              <h3 className="text-2xl font-bold text-[#102a2a]">{item.title}</h3>
-              <p className="mt-4 text-sm leading-7 text-[#526d72]">{item.text}</p>
+              <h3 className="font-display text-2xl font-semibold text-ink">{item.title}</h3>
+              <p className="mt-4 text-sm leading-7 text-muted">{item.text}</p>
             </div>
           ))}
         </div>
@@ -178,18 +124,18 @@ export function HomePageClient({
         <div className="glass-panel rounded-[36px] p-8 transition sm:p-10">
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-600">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-teal-600">
                 {messages.home.volunteerEyebrow}
               </p>
-              <h2 className="mt-4 text-4xl font-black text-[#102a2a]">{messages.home.volunteerTitle}</h2>
-              <p className="mt-4 max-w-2xl text-base leading-8 text-[#526d72]">
+              <h2 className="mt-4 font-display text-4xl font-semibold text-ink">{messages.home.volunteerTitle}</h2>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-muted">
                 {messages.home.volunteerDescription}
               </p>
             </div>
             <div className="grid gap-4">
               {[messages.home.volunteerPoint1, messages.home.volunteerPoint2, messages.home.volunteerPoint3].map((item) => (
                 <div key={item} className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                  <p className="text-sm leading-7 text-[#264653]">{item}</p>
+                  <p className="text-sm leading-7 text-ink-soft">{item}</p>
                 </div>
               ))}
             </div>
