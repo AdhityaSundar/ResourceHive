@@ -73,9 +73,8 @@ export function HeroSearchExperience({
 
   return (
     <div className="glass-panel rounded-[36px] p-6 sm:p-8">
-      <div className="grid gap-8 lg:grid-cols-[1fr_0.88fr]">
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
+      <div className="mx-auto w-full max-w-2xl space-y-6">
+          <div className="mx-auto flex w-fit items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
             <HexGlyph className="size-3 opacity-80" />
             {messages.common.searchNeeds}
           </div>
@@ -112,7 +111,7 @@ export function HeroSearchExperience({
             ) : null}
           </div>
 
-          <div role="group" aria-label={messages.common.searchNeeds} className="flex flex-wrap gap-2.5">
+          <div role="group" aria-label={messages.common.searchNeeds} className="flex flex-wrap justify-center gap-2.5">
             {needs.map((need) => {
               const active = selectedNeeds.includes(need);
               return (
@@ -139,7 +138,7 @@ export function HeroSearchExperience({
             })}
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
               href={resourceSearchHref}
               className="interactive-glow inline-flex h-14 items-center justify-center gap-2 rounded-full bg-teal-700 px-6 text-base font-semibold text-white shadow-e2 transition-all duration-200 hover:-translate-y-0.5 hover:bg-teal-600"
@@ -156,7 +155,7 @@ export function HeroSearchExperience({
           </div>
         </div>
 
-        <div className="space-y-4" aria-live="polite">
+        <div className="mx-auto mt-8 grid w-full max-w-4xl gap-4 sm:grid-cols-2" aria-live="polite">
           {results.length > 0 ? (
             results.map((resource) => (
               <Link
@@ -182,12 +181,11 @@ export function HeroSearchExperience({
               </Link>
             ))
           ) : (
-            <div className="rounded-[28px] border border-dashed border-teal-200 bg-white/60 p-6 text-sm text-muted">
+            <div className="rounded-[28px] border border-dashed border-teal-200 bg-white/60 p-6 text-center text-sm text-muted sm:col-span-2">
               {messages.common.noHeroResults}
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }
