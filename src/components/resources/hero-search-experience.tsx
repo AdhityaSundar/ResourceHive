@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { useEffect, useState, useTransition } from "react";
 import { ArrowRight, LoaderCircle, Search } from "lucide-react";
 
@@ -9,6 +9,7 @@ import { useLocale } from "@/components/providers/locale-provider";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { categoryAccent } from "@/lib/category-accent";
 import { localizeCategory, localizeNeed } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { Resource, ResourceNeed, ResourceSearchResult } from "@/lib/types";
@@ -72,7 +73,7 @@ export function HeroSearchExperience({
   }, [city, debouncedQuery, selectedNeeds, startSearchTransition]);
 
   return (
-    <div className="glass-panel rounded-[36px] p-6 sm:p-8">
+    <div className="panel-amber rounded-[36px] p-6 sm:p-8">
       <div className="mx-auto w-full max-w-2xl space-y-6">
           <div className="mx-auto flex w-fit items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
             <HexGlyph className="size-3 opacity-80" />
@@ -161,8 +162,14 @@ export function HeroSearchExperience({
               <Link
                 key={resource.id}
                 href={`/resource/${resource.id}`}
-                className="group block rounded-[28px] border border-[var(--border)] bg-white/80 p-5 shadow-e2 transition hover:-translate-y-1 hover:shadow-e3"
+                style={{ "--accent": categoryAccent(resource.category) } as CSSProperties}
+                className="card-steel group relative block overflow-hidden rounded-[28px] p-5 transition hover:-translate-y-1"
               >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-1.5"
+                  style={{ background: "linear-gradient(90deg, var(--accent), transparent)" }}
+                />
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-lg font-bold text-ink">{resource.name}</p>

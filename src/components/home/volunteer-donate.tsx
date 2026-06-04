@@ -24,20 +24,16 @@ export function VolunteerDonate() {
   ];
 
   return (
-    <div className="glass-panel relative overflow-hidden rounded-[36px] p-8 sm:p-10">
-      {/* Warm honeycomb wash — this is an "invite" surface */}
+    <div className="panel-amber relative overflow-hidden rounded-[36px] p-8 sm:p-10">
+      {/* Subtle honeycomb texture over the amber gloss */}
       <div
         aria-hidden="true"
-        className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-70"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(239,164,23,0.16),transparent_45%)]"
+        className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-40"
       />
 
       <div className="relative grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-honey-200 bg-honey-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.24em] text-honey-700">
+          <p className="inline-flex items-center gap-2 rounded-full border border-honey-300 bg-white/85 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.24em] text-honey-800">
             <HeartHandshake className="size-3.5" />
             {messages.home.volunteerEyebrow}
           </p>

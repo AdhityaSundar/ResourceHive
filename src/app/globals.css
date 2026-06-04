@@ -148,6 +148,43 @@ h4 {
   box-shadow: var(--shadow-e3), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
+/* Shiny amber finish for the large tool/feature panels (search, volunteer). */
+.panel-amber {
+  position: relative;
+  background: linear-gradient(157deg, #fff7e6 0%, #fce3aa 46%, #f7cb6a 100%);
+  border: 1px solid rgba(217, 158, 40, 0.45);
+  box-shadow:
+    0 18px 46px rgba(180, 120, 20, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.panel-amber::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 34%);
+}
+
+/* Brushed "shiny steel" finish for resource cards. Pair with a per-category
+   --accent (set inline) for the colored top edge + hover glow. */
+.card-steel {
+  position: relative;
+  background: linear-gradient(159deg, #fcfdff 0%, #eef2f7 52%, #e1e8ef 100%);
+  border: 1px solid rgba(120, 142, 165, 0.32);
+  box-shadow:
+    0 12px 30px rgba(38, 58, 80, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-steel:hover {
+  box-shadow:
+    0 22px 46px color-mix(in srgb, var(--accent, #8aa0b4) 28%, rgba(38, 58, 80, 0.18)),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
 .text-balance {
   text-wrap: balance;
 }

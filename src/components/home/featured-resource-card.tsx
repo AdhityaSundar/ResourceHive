@@ -1,10 +1,12 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 
 import { useLocale } from "@/components/providers/locale-provider";
 import { Badge } from "@/components/ui/badge";
+import { categoryAccent } from "@/lib/category-accent";
 import { localizeCategory } from "@/lib/i18n";
 import type { Resource } from "@/lib/types";
 
@@ -14,8 +16,14 @@ export function FeaturedResourceCard({ resource }: { resource: Resource }) {
   return (
     <Link
       href={`/resource/${resource.id}`}
-      className="group glass-panel flex h-full flex-col rounded-[32px] p-6 transition duration-300 hover:-translate-y-1.5 hover:shadow-e4"
+      style={{ "--accent": categoryAccent(resource.category) } as CSSProperties}
+      className="card-steel group relative flex h-full flex-col overflow-hidden rounded-[32px] p-6 transition duration-300 hover:-translate-y-1.5"
     >
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-1.5"
+        style={{ background: "linear-gradient(90deg, var(--accent), transparent)" }}
+      />
       <div className="flex items-center justify-between gap-3">
         <Badge tone="teal" hex>
           {localizeCategory(resource.category, locale)}
