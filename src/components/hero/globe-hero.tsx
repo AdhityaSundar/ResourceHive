@@ -18,7 +18,7 @@ const GlobeCanvas = dynamic(
   { ssr: false, loading: () => null },
 );
 
-const ACCENT = "text-honey-300 accent-glow";
+const ACCENT = "text-purple-400 accent-glow";
 const HEADLINE_CLASS =
   "font-display text-[clamp(2rem,4.6vw,4rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]";
 
@@ -148,7 +148,7 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
         {/* Globe — nudged down (banner clearance) + travels left with the text */}
         <div className="absolute inset-0 z-[1] translate-y-[7vh]">
           <motion.div style={{ x: globeX }} className="absolute inset-0">
-            <GlobeCanvas mode={mode} />
+            <GlobeCanvas mode={mode} progress={scrollYProgress} />
           </motion.div>
         </div>
 

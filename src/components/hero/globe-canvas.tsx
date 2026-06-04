@@ -2,10 +2,12 @@
 
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import type { MotionValue } from "framer-motion";
 import * as THREE from "three";
 
 type GlobeCanvasProps = {
   mode: "full" | "lite";
+  progress: MotionValue<number>;
 };
 
 const SUN_DIRECTION = new THREE.Vector3(5, 3, 5);
@@ -45,9 +47,10 @@ function Atmosphere() {
   );
 }
 
-function Earth({ mode }: GlobeCanvasProps) {
+function Earth({ mode, progress }: GlobeCanvasProps) {
   const groupRef = useRef<THREE.Group>(null);
   const cloudRef = useRef<THREE.Mesh>(null);
+  const prevProgress = useRef(0);
 
   const [dayMap, normalMap, specMap, cloudMap] = useLoader(THREE.TextureLoader, [
     "/textures/earth_atmos_2048.jpg",
@@ -67,10 +70,14 @@ function Earth({ mode }: GlobeCanvasProps) {
     const group = groupRef.current;
     if (!group) return;
 
+    const p = progress.get();
+    const dProgress = p - prevProgress.current;
+    prevProgress.current = p;
+
     const dt = Math.min(delta, 0.05);
 
-    // Continuous, constant-rate revolution (independent of scroll).
-    group.rotateY(dt * 0.08);
+    // Continuous spin + extra clockwise revolution coupled to scroll.
+    group.rotateY(dt * 0.08 + dProgress * 4);
     group.rotation.x = 0.16 * Math.sin(performance.now() * 0.00004);
 
     if (cloudRef.current) cloudRef.current.rotation.y += dt * 0.012;
