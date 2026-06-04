@@ -117,12 +117,15 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
     offset: ["start start", "end end"],
   });
 
-  // Headline parallax: starts as one line on the right (pushed there by a +x
-  // offset), then travels to the left margin while its max-width shrinks —
-  // reflowing the single line into three left-aligned lines, fully in frame.
-  // (x start and maxW end are the two tunable knobs.)
+  // Headline + globe share one leftward travel (same rate), so the globe moves
+  // WITH the text. Both start shifted right (headline = one readable line on the
+  // right, globe right-of-centre) and slide to x:0 — the headline reflowing into
+  // three left-aligned lines, the globe landing centred. The final frame (x:0,
+  // maxW 11ch) is unchanged; only the starting offset moved (22vw, in frame).
+  const SHARED_X: [string, string] = ["22vw", "0vw"];
   const headlineY = useTransform(scrollYProgress, [0, 0.5, 1], ["6%", "-2%", "2%"]);
-  const headlineX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
+  const headlineX = useTransform(scrollYProgress, [0, 1], SHARED_X);
+  const globeX = useTransform(scrollYProgress, [0, 1], SHARED_X);
   const headlineMaxW = useTransform(scrollYProgress, [0, 1], ["34ch", "11ch"]);
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
@@ -142,9 +145,11 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           <EmergencyBanner />
         </div>
 
-        {/* Globe — nudged down so it doesn't crowd the urgent banner */}
+        {/* Globe — nudged down (banner clearance) + travels left with the text */}
         <div className="absolute inset-0 z-[1] translate-y-[7vh]">
-          <GlobeCanvas mode={mode} progress={scrollYProgress} />
+          <motion.div style={{ x: globeX }} className="absolute inset-0">
+            <GlobeCanvas mode={mode} />
+          </motion.div>
         </div>
 
         {/* Headline: one line on the right that travels left and breaks into
