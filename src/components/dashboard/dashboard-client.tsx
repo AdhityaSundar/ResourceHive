@@ -11,7 +11,7 @@ import { localizeCategory } from "@/lib/i18n";
 import type { Resource } from "@/lib/types";
 
 export function DashboardClient({ resources }: { resources: Resource[] }) {
-  const { user, saved, history, login } = useAuth();
+  const { user, saved, history } = useAuth();
   const { locale, messages } = useLocale();
   const savedResources = resources.filter((resource) => saved.some((item) => item.resourceId === resource.id));
   const viewedResources = history
@@ -34,12 +34,9 @@ export function DashboardClient({ resources }: { resources: Resource[] }) {
             </p>
           </div>
           {!user ? (
-            <Button
-              size="lg"
-              onClick={() => login({ email: "demo@resourcehive.org", name: messages.shell.demoUserName })}
-            >
-              {messages.shell.demoLogin}
-            </Button>
+            <Link href="/login?redirect=/dashboard">
+              <Button size="lg">{messages.shell.demoLogin}</Button>
+            </Link>
           ) : null}
         </div>
       </section>

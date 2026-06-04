@@ -13,7 +13,7 @@ export const en = {
     brandName: "ResourceHive",
     brandSubtitle: "Community resource intelligence",
     brandLogoAlt: "ResourceHive logo",
-    demoLogin: "Demo Login",
+    demoLogin: "Sign in",
     demoUserName: "Demo User",
     signOut: "Sign out",
     platform: "Platform",

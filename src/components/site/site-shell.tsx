@@ -16,9 +16,8 @@ import { cn } from "@/lib/utils";
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const { messages } = useLocale();
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
   const mounted = useMounted();
-  const demoUser = { email: "demo@resourcehive.org", name: messages.shell.demoUserName };
   const navLinks = [
     { href: "/", label: messages.nav.home },
     { href: "/about", label: messages.nav.about },
@@ -58,13 +57,13 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                 <LanguageToggle />
                 <ThemeToggle />
                 {user ? (
-                  <Button variant="secondary" size="sm" onClick={logout}>
+                  <Button variant="secondary" size="sm" onClick={() => logout()}>
                     {messages.shell.signOut}
                   </Button>
                 ) : (
-                  <Button size="sm" onClick={() => login(demoUser)}>
-                    {messages.shell.demoLogin}
-                  </Button>
+                  <Link href="/login">
+                    <Button size="sm">{messages.shell.demoLogin}</Button>
+                  </Link>
                 )}
               </>
             ) : null}
@@ -93,9 +92,17 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                   <LanguageToggle />
                   <ThemeToggle />
                 </div>
-                <Button size="sm" onClick={() => (user ? logout() : login(demoUser))}>
-                  {user ? messages.shell.signOut : messages.shell.demoLogin}
-                </Button>
+                {user ? (
+                  <Button size="sm" onClick={() => logout()}>
+                    {messages.shell.signOut}
+                  </Button>
+                ) : (
+                  <Link href="/login">
+                    <Button size="sm" className="w-full">
+                      {messages.shell.demoLogin}
+                    </Button>
+                  </Link>
+                )}
               </>
             ) : null}
           </div>
