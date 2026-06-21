@@ -15,6 +15,7 @@ import type {
 const backend = process.env.DATABASE_URL ? prismaBackend : jsonBackend;
 
 export const getResources = backend.getResources;
+export const getResourcesByOwner = backend.getResourcesByOwner;
 export const getResourceById = backend.getResourceById;
 export const saveResources = backend.saveResources;
 export const upsertResource = backend.upsertResource;

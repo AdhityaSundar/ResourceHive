@@ -38,6 +38,11 @@ export type Resource = {
   eligibility: string;
   sourceType: "seed" | "spreadsheet" | "manual";
   sourceRef?: string;
+  // Ownership: null/undefined = global resource (shown in the public directory,
+  // managed by admins). A Supabase auth user id = a personal resource that only
+  // its owner sees on their "My Resources" page.
+  ownerId?: string;
+  ownerEmail?: string;
   updatedAt: string;
 };
 

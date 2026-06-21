@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
@@ -16,17 +17,26 @@ import { cn } from "@/lib/utils";
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const { messages } = useLocale();
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const mounted = useMounted();
+  const pathname = usePathname();
+
+  // Auth pages render full-screen without the site chrome (header/footer).
+  if (pathname === "/login" || pathname === "/signup") {
+    return <>{children}</>;
+  }
+  // First six are the public links (also reused in the footer). Account links are
+  // appended only when signed in: admins manage the shared directory, everyone
+  // else manages their own resources.
   const navLinks = [
     { href: "/", label: messages.nav.home },
     { href: "/about", label: messages.nav.about },
     { href: "/resources", label: messages.nav.resources },
-    { href: "/map", label: messages.nav.map },
     { href: "/faq", label: messages.nav.faq },
     { href: "/contact", label: messages.nav.contact },
-    { href: "/dashboard", label: messages.nav.dashboard },
-    { href: "/admin", label: messages.nav.admin },
+    ...(user ? [{ href: "/dashboard", label: messages.nav.dashboard }] : []),
+    ...(user ? [{ href: "/preferences", label: messages.nav.preferences }] : []),
+    ...(user && isAdmin ? [{ href: "/admin", label: messages.nav.admin }] : []),
   ];
 
   return (
@@ -128,7 +138,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <div>
               <h4 className="font-display text-base font-semibold text-ink">{messages.shell.platform}</h4>
               <ul className="mt-4 space-y-2.5">
-                {navLinks.slice(0, 6).map((link) => (
+                {navLinks.slice(0, 5).map((link) => (
                   <li key={link.href}>
                     <Link href={link.href} className="transition hover:text-teal-600">
                       {link.label}

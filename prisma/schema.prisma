@@ -35,11 +35,16 @@ model Resource {
   eligibility String
   sourceType  String
   sourceRef   String?
+  // Ownership: null = global resource (public directory, admin-managed). A
+  // Supabase auth user id = a personal resource only its owner sees.
+  ownerId     String?
+  ownerEmail  String?
   // Managed in app code via normalizeResource (preserves imported timestamps),
   // so this is a plain column rather than @updatedAt.
   updatedAt   DateTime
 
   @@index([category, city])
   @@index([name])
+  @@index([ownerId])
   @@map("resources")
 }

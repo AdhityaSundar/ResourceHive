@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 import { EmergencyBanner } from "@/components/site/emergency-banner";
@@ -58,14 +58,14 @@ function HeroActions() {
           <ArrowRight className="size-4" />
         </Button>
       </Link>
-      <Link href="/map">
+      <Link href="/preferences">
         <Button
           variant="secondary"
           size="lg"
           className="gap-2 bg-white px-8 text-base text-teal-800 shadow-e3 hover:bg-white"
         >
-          <MapPin className="size-4" />
-          Open map
+          <Heart className="size-4" />
+          Your favorites
         </Button>
       </Link>
     </div>

@@ -1,14 +1,13 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { ArrowLeft, Clock3, Info, Languages, Mail, MapPin, Phone, UserRound } from "lucide-react";
+import { ArrowLeft, Clock3, Globe, Info, Languages, Mail, MapPin, Navigation, Phone, UserRound } from "lucide-react";
 
 import { useLocale } from "@/components/providers/locale-provider";
-import { ResourcePreviewMap } from "@/components/maps/resource-preview-map";
 import { Badge } from "@/components/ui/badge";
 import { localizeCategory, localizeLanguage } from "@/lib/i18n";
 import type { Resource } from "@/lib/types";
-import { formatLocation, formatPhone } from "@/lib/utils";
+import { formatLocation, formatPhone, getDirectionsUrl, websiteLabel, websiteUrl } from "@/lib/utils";
 
 export function ResourceDetailView({
   resource,
@@ -20,6 +19,7 @@ export function ResourceDetailView({
   const { locale, messages } = useLocale();
   const location = formatLocation(resource);
   const phone = formatPhone(resource.phone);
+  const siteHref = websiteUrl(resource.website);
   const languages = resource.languages.map((language) => localizeLanguage(language, locale)).join(", ");
   const services = resource.services.filter(Boolean);
   const tags = resource.tags.filter(Boolean);
@@ -74,6 +74,16 @@ export function ResourceDetailView({
                 <div className="flex gap-3 text-ink-soft"><UserRound className="mt-1 size-4 text-teal-500" /><span>{resource.contactName}</span></div>
               </div>
             ) : null}
+            {siteHref ? (
+              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
+                <div className="flex gap-3 text-ink-soft">
+                  <Globe className="mt-1 size-4 text-teal-500" />
+                  <a href={siteHref} target="_blank" rel="noopener noreferrer" className="break-all font-medium text-teal-700 transition hover:text-honey-600">
+                    {websiteLabel(resource.website)}
+                  </a>
+                </div>
+              </div>
+            ) : null}
           </div>
 
           {services.length ? (
@@ -108,9 +118,35 @@ export function ResourceDetailView({
 
         <aside className="space-y-5">
           <div className="glass-panel rounded-[30px] p-6">
-            <h2 className="text-2xl font-bold text-ink">{messages.common.mapPreview}</h2>
-            <div className="mt-4 overflow-hidden rounded-[26px]">
-              <ResourcePreviewMap resource={resource} />
+            <h2 className="text-2xl font-bold text-ink">{messages.common.reachOut}</h2>
+            <div className="mt-4 space-y-3">
+              {siteHref ? (
+                <a href={siteHref} target="_blank" rel="noopener noreferrer" className="interactive-glow flex items-center gap-3 rounded-2xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-teal-600">
+                  <Globe className="size-4" />
+                  {messages.common.visitWebsite}
+                </a>
+              ) : null}
+              {phone ? (
+                <a href={`tel:${resource.phone.replace(/[^\d+]/g, "")}`} className="flex items-center gap-3 rounded-2xl border border-[var(--border-strong)] bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white">
+                  <Phone className="size-4 text-teal-600" />
+                  {phone}
+                </a>
+              ) : null}
+              {resource.email ? (
+                <a href={`mailto:${resource.email}`} className="flex items-center gap-3 rounded-2xl border border-[var(--border-strong)] bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white">
+                  <Mail className="size-4 text-teal-600" />
+                  {resource.email}
+                </a>
+              ) : null}
+              {resource.address ? (
+                <a href={getDirectionsUrl(resource)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-2xl border border-[var(--border-strong)] bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white">
+                  <Navigation className="size-4 text-teal-600" />
+                  {messages.common.getDirections}
+                </a>
+              ) : null}
+              {!siteHref && !phone && !resource.email && !resource.address ? (
+                <p className="text-sm leading-7 text-muted">{messages.common.unavailable}</p>
+              ) : null}
             </div>
             {location ? <p className="mt-4 text-sm leading-7 text-muted">{location}</p> : null}
           </div>

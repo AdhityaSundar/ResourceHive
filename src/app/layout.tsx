@@ -35,6 +35,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${bricolage.variable} ${jakarta.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full font-sans" suppressHydrationWarning>

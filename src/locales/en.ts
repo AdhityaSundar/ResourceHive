@@ -3,11 +3,11 @@ export const en = {
     home: "Home",
     about: "About",
     resources: "Resources",
-    map: "Map View",
     faq: "FAQ",
     contact: "Contact",
     dashboard: "Dashboard",
     admin: "Admin",
+    preferences: "Preferences",
   },
   shell: {
     brandName: "ResourceHive",
@@ -40,6 +40,7 @@ export const en = {
     viewDetails: "View details",
     visitSite: "Visit site",
     visitWebsite: "Visit website",
+    reachOut: "Reach out",
     getDirections: "Get directions",
     unavailable: "Unavailable",
     select: "Select",
@@ -74,6 +75,7 @@ export const en = {
     getRecommendations: "Get recommendations",
     uploadSheet: "Upload sheet",
     new: "New",
+    cancel: "Cancel",
     createResource: "Create resource",
     updateResource: "Update resource",
     saving: "Saving...",
@@ -229,6 +231,20 @@ export const en = {
     resources: "resources",
     skipped: "skipped",
     rowIssues: "row issues detected",
+  },
+  preferences: {
+    eyebrow: "Your preferences",
+    title: "Your favorites and your own resources",
+    description:
+      "Everything here is private to your account — favorites you heart and resources you add appear only for you, never for other users or in the public directory.",
+    favoritesTitle: "Your favorites",
+    favoritesEmpty:
+      "Tap the heart on any resource in the directory to keep it here for quick access.",
+    yourList: "Your added resources",
+    addTitle: "Add a resource",
+    editTitle: "Edit resource",
+    emptyHint:
+      "You haven't added any resources yet. Fill out the form to add your first one — only you will see it.",
   },
   resourceDetail: {
     whyThisMattersText:

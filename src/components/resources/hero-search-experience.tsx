@@ -5,6 +5,7 @@ import { useMemo, type CSSProperties } from "react";
 import { useEffect, useState, useTransition } from "react";
 import { ArrowRight, LoaderCircle, Search } from "lucide-react";
 
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -32,12 +33,24 @@ export function HeroSearchExperience({
   cityOptions: string[];
 }) {
   const { locale, messages } = useLocale();
+  const { saved } = useAuth();
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
   const [selectedNeeds, setSelectedNeeds] = useState<ResourceNeed[]>(["food"]);
   const [results, setResults] = useState<Resource[]>(initialResources.slice(0, 4));
   const [isPending, startSearchTransition] = useTransition();
   const debouncedQuery = useDebouncedValue(query, 250);
+
+  // Surface the user's hearted favorites first, then fill with search results.
+  const displayResults = useMemo(() => {
+    const savedIds = new Set(saved.map((item) => item.resourceId));
+    const byId = new Map(initialResources.map((resource) => [resource.id, resource]));
+    const favorites = saved
+      .map((item) => byId.get(item.resourceId))
+      .filter((resource): resource is Resource => Boolean(resource));
+    const rest = results.filter((resource) => !savedIds.has(resource.id));
+    return [...favorites, ...rest].slice(0, 6);
+  }, [saved, initialResources, results]);
 
   const resourceSearchHref = useMemo(() => {
     const params = new URLSearchParams();
@@ -147,18 +160,12 @@ export function HeroSearchExperience({
               {messages.common.exploreResults}
               <ArrowRight className="size-4" />
             </Link>
-            <Link
-              href="/map"
-              className="interactive-glow inline-flex h-14 items-center justify-center rounded-full bg-white/75 px-6 text-base font-semibold text-teal-700 ring-1 ring-[var(--border-strong)] backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-white"
-            >
-              {messages.common.openMap}
-            </Link>
           </div>
         </div>
 
         <div className="mx-auto mt-8 grid w-full max-w-4xl gap-4 sm:grid-cols-2" aria-live="polite">
-          {results.length > 0 ? (
-            results.map((resource) => (
+          {displayResults.length > 0 ? (
+            displayResults.map((resource) => (
               <Link
                 key={resource.id}
                 href={`/resource/${resource.id}`}

@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { Heart, Mail, MapPin, Phone, UserRound } from "lucide-react";
+import { Globe, Heart, Mail, MapPin, Phone, UserRound } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { useAuth } from "@/components/providers/auth-provider";
@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { categoryAccent } from "@/lib/category-accent";
 import { localizeCategory } from "@/lib/i18n";
 import type { Resource } from "@/lib/types";
-import { formatLocation, formatPhone } from "@/lib/utils";
+import { formatLocation, formatPhone, websiteLabel, websiteUrl } from "@/lib/utils";
 
 export function ResourceCard({ resource }: { resource: Resource }) {
   const { saved, toggleSaved, recordView } = useAuth();
@@ -21,6 +21,7 @@ export function ResourceCard({ resource }: { resource: Resource }) {
   const isSaved = saved.some((item) => item.resourceId === resource.id);
   const location = formatLocation(resource);
   const phone = formatPhone(resource.phone);
+  const siteHref = websiteUrl(resource.website);
 
   return (
     <motion.article
@@ -81,6 +82,19 @@ export function ResourceCard({ resource }: { resource: Resource }) {
           <div className="flex gap-3">
             <UserRound className="mt-0.5 size-4 shrink-0 text-teal-500" />
             <span>{resource.contactName}</span>
+          </div>
+        ) : null}
+        {siteHref ? (
+          <div className="flex gap-3">
+            <Globe className="mt-0.5 size-4 shrink-0 text-teal-500" />
+            <a
+              href={siteHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="break-all font-medium text-teal-700 transition hover:text-honey-600"
+            >
+              {websiteLabel(resource.website)}
+            </a>
           </div>
         ) : null}
       </div>

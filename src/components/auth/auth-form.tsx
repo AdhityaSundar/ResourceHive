@@ -3,11 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LoaderCircle } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle, Lock, LogIn, Mail, User } from "lucide-react";
 
 import { BrandMark } from "@/components/site/brand-mark";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -22,6 +20,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -99,63 +98,101 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-14">
-      <div className="glass-panel rounded-[32px] p-8">
-        <div className="flex items-center gap-3">
-          <BrandMark className="size-10" />
-          <div>
-            <h1 className="font-display text-2xl font-semibold text-ink">
-              {isSignup ? "Create your account" : "Welcome back"}
-            </h1>
-            <p className="text-sm text-muted">
-              {isSignup ? "Save resources and manage your hive." : "Sign in to ResourceHive."}
-            </p>
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 py-12">
+      {/* Airy, on-brand backdrop: warm/teal pooling, faint honeycomb, soft arcs. */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(244,190,78,0.20),transparent_46%),radial-gradient(circle_at_12%_88%,rgba(14,124,134,0.16),transparent_42%),radial-gradient(circle_at_88%_82%,rgba(224,133,12,0.12),transparent_42%)]" />
+        <div className="honeycomb-texture-light absolute inset-0 opacity-50" />
+        <div className="absolute left-1/2 top-1/2 size-[125vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/50" />
+        <div className="absolute left-1/2 top-1/2 size-[92vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/35" />
+        <div className="absolute left-1/2 top-1/2 size-[62vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/25" />
+      </div>
+
+      {/* Brand mark, top-left. */}
+      <Link href="/" className="logo-hover absolute left-6 top-6 flex items-center gap-2.5">
+        <BrandMark className="size-9" priority />
+        <span className="font-display text-lg font-bold tracking-tight text-ink">ResourceHive</span>
+      </Link>
+
+      {/* Inline maxWidth: the global `div { max-width: 100% }` rule in globals.css
+          (unlayered) overrides Tailwind's max-w-* utility, so cap it inline. */}
+      <div
+        style={{ maxWidth: "26rem" }}
+        className="glass-panel w-full rounded-[34px] p-8 shadow-e4 sm:p-10"
+      >
+        <div className="flex flex-col items-center text-center">
+          <div className="grid size-14 place-items-center rounded-2xl bg-white text-teal-700 shadow-e2 ring-1 ring-[var(--border)]">
+            <LogIn className="size-6" />
           </div>
+          <h1 className="mt-5 font-display text-3xl font-bold text-ink">
+            {isSignup ? "Create your account" : "Sign in with email"}
+          </h1>
+          <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
+            {isSignup
+              ? "Join ResourceHive to save resources and manage your own hive."
+              : "Welcome back. Sign in to reach your dashboard and saved resources."}
+          </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleGoogle}
-          className="interactive-glow mt-7 flex w-full items-center justify-center gap-3 rounded-full border border-[var(--border-strong)] bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white/90"
-        >
-          <GoogleIcon />
-          Continue with Google
-        </button>
-
-        <div className="my-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-          <span className="h-px flex-1 bg-[var(--border)]" />
-          or
-          <span className="h-px flex-1 bg-[var(--border)]" />
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} autoComplete="off" className="mt-8 space-y-3">
           {isSignup ? (
-            <Input
-              type="text"
-              placeholder="Full name"
-              autoComplete="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              required
-            />
+            <Field icon={<User className="size-4" />}>
+              <input
+                type="text"
+                placeholder="Full name"
+                autoComplete="name"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+                className="h-12 w-full bg-transparent pl-11 pr-4 text-sm text-ink outline-none placeholder:text-muted"
+              />
+            </Field>
           ) : null}
-          <Input
-            type="email"
-            placeholder="Email address"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            autoComplete={isSignup ? "new-password" : "current-password"}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            minLength={6}
-            required
-          />
+
+          <Field icon={<Mail className="size-4" />}>
+            <input
+              type="email"
+              placeholder="Email"
+              autoComplete="off"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              className="h-12 w-full bg-transparent pl-11 pr-4 text-sm text-ink outline-none placeholder:text-muted"
+            />
+          </Field>
+
+          <Field icon={<Lock className="size-4" />}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              autoComplete="off"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              minLength={6}
+              required
+              className="h-12 w-full bg-transparent pl-11 pr-11 text-sm text-ink outline-none placeholder:text-muted"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((value) => !value)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted transition hover:text-ink"
+            >
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </Field>
+
+          {!isSignup ? (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm font-medium text-teal-700 transition hover:text-honey-600"
+              >
+                Forgot password?
+              </button>
+            </div>
+          ) : null}
 
           {error ? (
             <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm text-rose-700">
@@ -168,23 +205,32 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             </p>
           ) : null}
 
-          <Button type="submit" size="lg" className="w-full gap-2" disabled={loading}>
+          <button
+            type="submit"
+            disabled={loading}
+            className="interactive-glow mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,var(--teal-800),var(--ink))] text-sm font-semibold text-white shadow-e3 transition hover:-translate-y-0.5 hover:shadow-[var(--glow-teal)] disabled:opacity-60"
+          >
             {loading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-            {isSignup ? "Create account" : "Sign in"}
-          </Button>
+            {isSignup ? "Get started" : "Sign in"}
+          </button>
         </form>
 
-        {!isSignup ? (
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            className="mt-4 text-sm font-medium text-teal-600 transition hover:text-honey-600"
-          >
-            Forgot password?
-          </button>
-        ) : null}
+        <div className="my-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+          <span className="h-px flex-1 bg-[var(--border)]" />
+          {isSignup ? "Or sign up with" : "Or sign in with"}
+          <span className="h-px flex-1 bg-[var(--border)]" />
+        </div>
 
-        <p className="mt-6 border-t border-[var(--border)] pt-5 text-sm text-muted">
+        <button
+          type="button"
+          onClick={handleGoogle}
+          className="interactive-glow flex w-full items-center justify-center gap-3 rounded-full border border-[var(--border-strong)] bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white/90"
+        >
+          <GoogleIcon />
+          Continue with Google
+        </button>
+
+        <p className="mt-7 text-center text-sm text-muted">
           {isSignup ? "Already have an account? " : "New to ResourceHive? "}
           <Link
             href={isSignup ? "/login" : "/signup"}
@@ -194,11 +240,18 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </Link>
         </p>
       </div>
+    </div>
+  );
+}
 
-      <p className="mt-6 text-center text-xs leading-6 text-muted">
-        Browsing the directory never requires an account — sign in only to save
-        resources and manage listings.
-      </p>
+// Input shell with a leading icon — keeps each field visually consistent.
+function Field({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div className="relative rounded-2xl border border-[var(--border)] bg-white/70 transition focus-within:border-teal-300 focus-within:ring-4 focus-within:ring-teal-200/50">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted">
+        {icon}
+      </span>
+      {children}
     </div>
   );
 }

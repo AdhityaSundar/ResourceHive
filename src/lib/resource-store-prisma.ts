@@ -20,6 +20,8 @@ function toResource(row: ResourceRow): Resource {
     info: row.info ?? "",
     sourceRef: row.sourceRef ?? "",
     sourceType: row.sourceType as Resource["sourceType"],
+    ownerId: row.ownerId ?? undefined,
+    ownerEmail: row.ownerEmail ?? undefined,
     updatedAt: row.updatedAt.toISOString(),
   });
 }
@@ -53,12 +55,27 @@ function toPrismaData(resource: Resource): Prisma.ResourceCreateInput {
     eligibility: normalized.eligibility,
     sourceType: normalized.sourceType,
     sourceRef: normalized.sourceRef ?? "",
+    ownerId: normalized.ownerId ?? null,
+    ownerEmail: normalized.ownerEmail ?? null,
     updatedAt: new Date(normalized.updatedAt),
   };
 }
 
+// Public directory = global resources only (no owner). Personal resources are
+// fetched separately via getResourcesByOwner.
 export async function getResources(): Promise<Resource[]> {
-  const rows = await prisma.resource.findMany({ orderBy: { updatedAt: "desc" } });
+  const rows = await prisma.resource.findMany({
+    where: { ownerId: null },
+    orderBy: { updatedAt: "desc" },
+  });
+  return rows.map(toResource);
+}
+
+export async function getResourcesByOwner(ownerId: string): Promise<Resource[]> {
+  const rows = await prisma.resource.findMany({
+    where: { ownerId },
+    orderBy: { updatedAt: "desc" },
+  });
   return rows.map(toResource);
 }
 

@@ -3,11 +3,11 @@ export const es = {
     home: "Inicio",
     about: "Acerca de",
     resources: "Recursos",
-    map: "Mapa",
     faq: "Preguntas",
     contact: "Contacto",
     dashboard: "Panel",
     admin: "Administración",
+    preferences: "Preferencias",
   },
   shell: {
     brandName: "ResourceHive",
@@ -40,6 +40,7 @@ export const es = {
     viewDetails: "Ver detalles",
     visitSite: "Visitar sitio",
     visitWebsite: "Visitar sitio web",
+    reachOut: "Contáctate",
     getDirections: "Cómo llegar",
     unavailable: "No disponible",
     select: "Seleccionar",
@@ -75,6 +76,7 @@ export const es = {
     getRecommendations: "Obtener recomendaciones",
     uploadSheet: "Subir hoja",
     new: "Nuevo",
+    cancel: "Cancelar",
     createResource: "Crear recurso",
     updateResource: "Actualizar recurso",
     saving: "Guardando...",
@@ -232,6 +234,20 @@ export const es = {
     resources: "recursos",
     skipped: "omitidos",
     rowIssues: "problemas de filas detectados",
+  },
+  preferences: {
+    eyebrow: "Tus preferencias",
+    title: "Tus favoritos y tus propios recursos",
+    description:
+      "Todo aquí es privado de tu cuenta: los favoritos que marcas y los recursos que agregas aparecen solo para ti, nunca para otros usuarios ni en el directorio público.",
+    favoritesTitle: "Tus favoritos",
+    favoritesEmpty:
+      "Toca el corazón en cualquier recurso del directorio para guardarlo aquí y acceder rápido.",
+    yourList: "Tus recursos agregados",
+    addTitle: "Agregar un recurso",
+    editTitle: "Editar recurso",
+    emptyHint:
+      "Aún no has agregado ningún recurso. Completa el formulario para agregar el primero: solo tú lo verás.",
   },
   resourceDetail: {
     whyThisMattersText:

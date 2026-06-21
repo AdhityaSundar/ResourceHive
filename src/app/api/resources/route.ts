@@ -6,6 +6,7 @@ import {
   upsertResource,
 } from "@/lib/resource-store";
 import { normalizeResource } from "@/lib/resource-normalization";
+import { getAuthContext } from "@/lib/supabase/auth";
 import type { Resource, ResourceSearchParams } from "@/lib/types";
 
 export async function GET(request: Request) {
@@ -27,8 +28,17 @@ export async function GET(request: Request) {
   });
 }
 
+// Creates/updates a GLOBAL (public-directory) resource — admins only.
 export async function POST(request: Request) {
+  const { isAdmin } = await getAuthContext();
+  if (!isAdmin) {
+    return NextResponse.json({ message: "Admin access required." }, { status: 403 });
+  }
+
   const payload = (await request.json()) as Resource;
-  const resource = await upsertResource(normalizeResource(payload));
+  // Force global ownership regardless of what the client sends.
+  const resource = await upsertResource(
+    normalizeResource({ ...payload, ownerId: undefined, ownerEmail: undefined }),
+  );
   return NextResponse.json(resource, { status: 201 });
 }

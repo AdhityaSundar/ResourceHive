@@ -14,19 +14,29 @@ async function ensureDataFile() {
   await fs.mkdir(path.dirname(dataFile), { recursive: true });
 }
 
-async function readDataFile(): Promise<Resource[]> {
+// Reads every record (global + personal). Used internally by the mutations so
+// they never drop personal resources; callers should use getResources (global)
+// or getResourcesByOwner instead.
+async function readAll(): Promise<Resource[]> {
   await ensureDataFile();
   const file = await fs.readFile(dataFile, "utf8");
   const parsed = JSON.parse(file) as Array<Partial<Resource> & { name: string }>;
   return parsed.map((resource) => normalizeResource(resource));
 }
 
+// Public directory = global resources only (no owner).
 export async function getResources(): Promise<Resource[]> {
-  return readDataFile();
+  const resources = await readAll();
+  return resources.filter((resource) => !resource.ownerId);
+}
+
+export async function getResourcesByOwner(ownerId: string): Promise<Resource[]> {
+  const resources = await readAll();
+  return resources.filter((resource) => resource.ownerId === ownerId);
 }
 
 export async function getResourceById(id: string) {
-  const resources = await getResources();
+  const resources = await readAll();
   return resources.find((resource) => resource.id === id) ?? null;
 }
 
@@ -37,7 +47,7 @@ export async function saveResources(resources: Resource[]) {
 }
 
 export async function upsertResource(resource: Resource) {
-  const resources = await getResources();
+  const resources = await readAll();
   const normalized = normalizeResource(resource);
   const index = resources.findIndex((item) => item.id === normalized.id);
 
@@ -52,7 +62,7 @@ export async function upsertResource(resource: Resource) {
 }
 
 export async function deleteResource(id: string) {
-  const resources = await getResources();
+  const resources = await readAll();
   const nextResources = resources.filter((resource) => resource.id !== id);
   await saveResources(nextResources);
   return nextResources;
@@ -62,7 +72,7 @@ export async function importResourcesFromRows(
   rows: ResourceImportRow[],
   sourceRef: string,
 ): Promise<ResourceImportSummary> {
-  const current = await getResources();
+  const current = await readAll();
   const summary = normalizeImportRows(rows, sourceRef);
   const merged = new Map(current.map((resource) => [resource.id, resource]));
 

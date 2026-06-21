@@ -2,12 +2,14 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { isAdminEmail } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { DemoUser, SavedResource, ViewedResource } from "@/lib/types";
 
 type AuthContextValue = {
   user: DemoUser | null;
+  isAdmin: boolean;
   saved: SavedResource[];
   history: ViewedResource[];
   logout: () => Promise<void>;
@@ -99,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, saved, history, logout, toggleSaved, recordView }),
+    () => ({ user, isAdmin: isAdminEmail(user?.email), saved, history, logout, toggleSaved, recordView }),
     [user, saved, history, logout, toggleSaved, recordView],
   );
 

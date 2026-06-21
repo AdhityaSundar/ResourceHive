@@ -1,8 +1,9 @@
 ﻿"use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { Grid2X2, List, LoaderCircle } from "lucide-react";
 
+import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { LoadingCard } from "@/components/resources/loading-card";
 import { ResourceCard } from "@/components/resources/resource-card";
@@ -26,6 +27,7 @@ export function ResourceDirectoryClient({
   initialNeeds?: string[];
 }) {
   const { messages } = useLocale();
+  const { saved } = useAuth();
   const [filters, setFilters] = useState<ResourceFilters>({
     query: initialQuery,
     category: initialCategory,
@@ -37,6 +39,31 @@ export function ResourceDirectoryClient({
   const [loadingMore, setLoadingMore] = useState(false);
   const [isPending, startSearchTransition] = useTransition();
   const debouncedQuery = useDebouncedValue(filters.query, 250);
+
+  // Float the user's hearted favorites to the top. With no active filters we
+  // also pull in favorites that aren't on the current page (so they always lead
+  // the default view); when filtering, we only reorder what already matched.
+  const hasFilters = Boolean(
+    filters.query || filters.category || filters.city || filters.needs?.length,
+  );
+  const displayItems = useMemo(() => {
+    const savedIds = new Set(saved.map((item) => item.resourceId));
+    if (savedIds.size === 0) return result.items;
+
+    if (hasFilters) {
+      const favorites = result.items.filter((resource) => savedIds.has(resource.id));
+      const rest = result.items.filter((resource) => !savedIds.has(resource.id));
+      return [...favorites, ...rest];
+    }
+
+    const byId = new Map(initialResources.map((resource) => [resource.id, resource]));
+    const favorites = saved
+      .map((item) => byId.get(item.resourceId))
+      .filter((resource): resource is Resource => Boolean(resource));
+    const favIds = new Set(favorites.map((resource) => resource.id));
+    const rest = result.items.filter((resource) => !favIds.has(resource.id));
+    return [...favorites, ...rest];
+  }, [saved, result.items, hasFilters, initialResources]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -131,9 +158,9 @@ export function ResourceDirectoryClient({
             <LoadingCard key={index} />
           ))}
         </div>
-      ) : result.items.length > 0 ? (
+      ) : displayItems.length > 0 ? (
         <div className={view === "grid" ? "grid gap-5 md:grid-cols-2 xl:grid-cols-3" : "space-y-4"}>
-          {result.items.map((resource) => (
+          {displayItems.map((resource) => (
             <ResourceCard key={resource.id} resource={resource} />
           ))}
         </div>

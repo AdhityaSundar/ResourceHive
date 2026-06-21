@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 
 import { importResourcesFromRows } from "@/lib/resource-store";
+import { getAuthContext } from "@/lib/supabase/auth";
 import type { ResourceImportRow } from "@/lib/types";
 
 export async function POST(request: Request) {
+  const { isAdmin } = await getAuthContext();
+  if (!isAdmin) {
+    return NextResponse.json({ message: "Admin access required." }, { status: 403 });
+  }
+
   const formData = await request.formData();
   const file = formData.get("file");
 

@@ -173,3 +173,18 @@ export function getDirectionsUrl(resource: Resource) {
     formatAddress(resource.address, resource.city, resource.state, resource.zip),
   )}`;
 }
+
+// A clickable href for a resource website (handles bare domains like
+// "fullcart.com" by prefixing https://).
+export function websiteUrl(website?: string) {
+  const text = cleanText(website);
+  if (!text) return "";
+  return /^https?:\/\//i.test(text) ? text : `https://${text}`;
+}
+
+// A clean display label for a website (drops the protocol and trailing slash).
+export function websiteLabel(website?: string) {
+  return cleanText(website)
+    .replace(/^https?:\/\//i, "")
+    .replace(/\/$/, "");
+}

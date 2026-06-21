@@ -139,6 +139,8 @@ export function normalizeResource(input: Partial<Resource> & { name: string }): 
     eligibility: cleanText(input.eligibility),
     sourceType: input.sourceType ?? "manual",
     sourceRef: cleanText(input.sourceRef),
+    ownerId: cleanText(input.ownerId) || undefined,
+    ownerEmail: cleanText(input.ownerEmail) || undefined,
     updatedAt: input.updatedAt ?? new Date().toISOString(),
   };
 }

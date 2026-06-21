@@ -12,6 +12,7 @@
     "prisma:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
+    "db:secure": "prisma db execute --file prisma/rls.sql --schema prisma/schema.prisma",
     "db:seed": "node prisma/seed.mjs"
   },
   "dependencies": {
@@ -27,7 +28,7 @@
     "framer-motion": "^12.23.24",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
-    "next": "16.2.2",
+    "next": "^16.2.9",
     "next-themes": "^0.4.6",
     "pdf-parse": "^1.1.1",
     "react": "19.2.4",
@@ -46,7 +47,7 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.184.1",
     "eslint": "^9",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "^16.2.9",
     "prisma": "^6.7.0",
     "tailwindcss": "^4",
     "typescript": "^5"
