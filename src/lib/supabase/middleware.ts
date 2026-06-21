@@ -9,8 +9,9 @@ import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from "@/lib/sup
 // (the original product decision: never gate crisis users behind a signup wall).
 const REQUIRE_LOGIN_TO_BROWSE = true;
 
-// Pages that must stay reachable while signed out (otherwise nobody could log in).
-const PUBLIC_PREFIXES = ["/login", "/signup", "/auth"];
+// Pages/API routes that must stay reachable while signed out (otherwise nobody
+// could log in, and the public contact form could not submit).
+const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/api/contact"];
 
 // Routes that require a signed-in user even when REQUIRE_LOGIN_TO_BROWSE is off.
 const PROTECTED_PREFIXES = ["/dashboard", "/preferences", "/admin"];

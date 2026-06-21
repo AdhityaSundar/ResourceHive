@@ -7,6 +7,7 @@ import { ArrowRight, Heart } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 import { EmergencyBanner } from "@/components/site/emergency-banner";
+import { useLocale } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import { useGlobeCapability } from "@/components/hero/use-globe-capability";
 import { GlobeStatic } from "@/components/hero/globe-static";
@@ -24,37 +25,47 @@ const HEADLINE_CLASS =
 
 // The headline as three atomic phrases. On a wide container they sit on one
 // line; as the container narrows they wrap cleanly to three lines.
-const HEADLINE_PHRASES = (
-  <>
-    <span className="whitespace-nowrap">
-      Find the <span className={ACCENT}>help</span>
-    </span>{" "}
-    <span className="whitespace-nowrap">you need</span>{" "}
-    <span className="whitespace-nowrap">
-      <span className={ACCENT}>most</span>.
-    </span>
-  </>
-);
+function HeadlinePhrases() {
+  const { messages } = useLocale();
+
+  return (
+    <>
+      <span className="whitespace-nowrap">
+        {messages.home.heroTitleFindThe}{" "}
+        <span className={ACCENT}>{messages.home.heroTitleHelp}</span>
+      </span>{" "}
+      <span className="whitespace-nowrap">{messages.home.heroTitleYouNeed}</span>{" "}
+      <span className="whitespace-nowrap">
+        <span className={ACCENT}>{messages.home.heroTitleMost}</span>.
+      </span>
+    </>
+  );
+}
 
 /** Static version (reduced-motion / no-WebGL): the final stacked three lines. */
 function HeadlineStacked({ id }: { id?: string }) {
+  const { messages } = useLocale();
+
   return (
     <h1 id={id} className={HEADLINE_CLASS}>
-      Find the <span className={ACCENT}>help</span>
+      {messages.home.heroTitleFindThe}{" "}
+      <span className={ACCENT}>{messages.home.heroTitleHelp}</span>
       <br />
-      you need
+      {messages.home.heroTitleYouNeed}
       <br />
-      <span className={ACCENT}>most</span>.
+      <span className={ACCENT}>{messages.home.heroTitleMost}</span>.
     </h1>
   );
 }
 
 function HeroActions() {
+  const { messages } = useLocale();
+
   return (
     <div className="flex flex-wrap gap-3">
       <Link href="/resources">
         <Button size="lg" className="gap-2 px-8 text-base shadow-e4">
-          Browse directory
+          {messages.home.browseDirectory}
           <ArrowRight className="size-4" />
         </Button>
       </Link>
@@ -65,7 +76,7 @@ function HeroActions() {
           className="gap-2 bg-white px-8 text-base text-teal-800 shadow-e3 hover:bg-white"
         >
           <Heart className="size-4" />
-          Your favorites
+          {messages.home.yourFavorites}
         </Button>
       </Link>
     </div>
@@ -75,11 +86,13 @@ function HeroActions() {
 /** Replaces the clumped on-globe pins: clear, labelled chips that link to each
  *  location's filtered directory. Also serves as the accessible locations nav. */
 function CityChips({ markers }: { markers: GlobeMarker[] }) {
+  const { messages } = useLocale();
+
   if (markers.length === 0) return null;
   return (
-    <nav aria-label="Browse resources by city" className="flex flex-wrap items-center gap-2">
+    <nav aria-label={messages.common.browseResourcesByCity} className="flex flex-wrap items-center gap-2">
       <span className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-100/60">
-        Find help in
+        {messages.home.findHelpIn}
       </span>
       {markers.map((marker) => (
         <Link
@@ -111,6 +124,7 @@ function HeroBackdrop() {
  * ref is only ever created while the pinned section is mounted.
  */
 function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: GlobeMarker[] }) {
+  const { messages } = useLocale();
   const outerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: outerRef,
@@ -169,7 +183,7 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
               style={{ maxWidth: headlineMaxW }}
               className={`${HEADLINE_CLASS} w-fit`}
             >
-              {HEADLINE_PHRASES}
+              <HeadlinePhrases />
             </motion.h1>
           </motion.div>
         </motion.div>
@@ -177,7 +191,7 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
         {/* Actions + locations — usable at every stage */}
         <div className="absolute inset-x-0 bottom-12 z-30 mx-auto flex max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:px-8">
           <p className="max-w-md text-base leading-7 text-teal-50/85">
-            Real people, real resources, updated daily.
+            {messages.home.heroLead}
           </p>
           <HeroActions />
           <CityChips markers={markers} />
@@ -188,7 +202,7 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
           style={{ opacity: hintOpacity }}
           className="pointer-events-none absolute right-6 top-1/2 z-20 text-xs font-semibold uppercase tracking-[0.24em] text-teal-100/40"
         >
-          Scroll
+          {messages.home.scrollHint}
         </motion.p>
       </div>
     </section>
@@ -197,6 +211,8 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
 
 /** Static / reduced-motion / no-WebGL / first-paint layout. */
 function StaticGlobeHero({ markers }: { markers: GlobeMarker[] }) {
+  const { messages } = useLocale();
+
   return (
     <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-teal-900">
       <HeroBackdrop />
@@ -205,8 +221,7 @@ function StaticGlobeHero({ markers }: { markers: GlobeMarker[] }) {
         <div className="max-w-xl">
           <HeadlineStacked id="hero-heading" />
           <p className="mt-6 max-w-lg text-lg leading-8 text-teal-50/85">
-            Real people, real resources, updated daily. Find food, shelter, jobs, and
-            care near you.
+            {messages.home.heroLeadStatic}
           </p>
           <div className="mt-8 flex flex-col gap-5">
             <HeroActions />

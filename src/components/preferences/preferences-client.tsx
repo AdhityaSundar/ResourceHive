@@ -147,17 +147,17 @@ export function PreferencesClient({
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-14 sm:px-6 lg:px-8">
-      <section className="glass-panel rounded-[32px] p-8">
+      <section className="glass-panel overflow-hidden rounded-[32px] bg-[radial-gradient(circle_at_0%_0%,rgba(244,190,78,0.26),transparent_34%),radial-gradient(circle_at_96%_8%,rgba(14,124,134,0.18),transparent_34%),rgba(255,255,255,0.76)] p-8">
         <p className="text-sm font-bold uppercase tracking-[0.28em] text-honey-600">{t.eyebrow}</p>
         <h1 className="mt-4 text-4xl font-bold text-ink">{t.title}</h1>
         <p className="mt-4 max-w-2xl text-base leading-8 text-muted">{t.description}</p>
       </section>
 
       {/* Favorites (hearted) */}
-      <section className="glass-panel rounded-[32px] p-6 sm:p-8">
+      <section className="glass-panel rounded-[32px] bg-[linear-gradient(145deg,rgba(255,255,255,0.82),rgba(255,248,236,0.76))] p-6 sm:p-8">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-honey-50 text-honey-600">
-            <Heart className="size-5 fill-honey-500 text-honey-600" />
+          <span className="grid size-10 place-items-center rounded-2xl bg-honey-500 text-white shadow-[0_14px_28px_rgba(224,133,12,0.24)]">
+            <Heart className="size-5 fill-white text-white" />
           </span>
           <h2 className="text-2xl font-bold text-ink">{t.favoritesTitle}</h2>
         </div>
@@ -168,12 +168,12 @@ export function PreferencesClient({
             ))}
           </div>
         ) : (
-          <p className="mt-5 text-sm leading-7 text-muted">{t.favoritesEmpty}</p>
+          <p className="mt-5 rounded-3xl border border-honey-200 bg-honey-50/80 p-4 text-sm leading-7 text-honey-800">{t.favoritesEmpty}</p>
         )}
       </section>
 
       {/* Your own added resources */}
-      <section className="glass-panel rounded-[32px] p-6 sm:p-8">
+      <section className="glass-panel rounded-[32px] bg-[linear-gradient(145deg,rgba(236,248,248,0.82),rgba(255,255,255,0.76))] p-6 sm:p-8">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-2xl font-bold text-ink">{t.yourList}</h2>
           <Button
@@ -204,7 +204,7 @@ export function PreferencesClient({
             >
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="mt-5 rounded-[28px] border border-white/40 bg-white/55 p-5 sm:p-6"
+                className="mt-5 rounded-[28px] border border-teal-200 bg-white/75 p-5 shadow-e2 sm:p-6"
               >
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="text-lg font-bold text-ink">{editing ? t.editTitle : t.addTitle}</h3>
@@ -259,7 +259,8 @@ export function PreferencesClient({
         <div className="mt-5 space-y-3">
           {sortedResources.length > 0 ? (
             sortedResources.map((resource) => (
-              <div key={resource.id} className="rounded-3xl border border-white/40 bg-white/55 p-4">
+              <div key={resource.id} className="relative overflow-hidden rounded-3xl border border-teal-100 bg-white/75 p-4 shadow-e1">
+                <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-teal-500" />
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="font-bold text-ink">{resource.name}</h3>
@@ -287,7 +288,7 @@ export function PreferencesClient({
               </div>
             ))
           ) : (
-            <p className="text-sm leading-7 text-muted">{t.emptyHint}</p>
+            <p className="rounded-3xl border border-teal-200 bg-teal-50/80 p-4 text-sm leading-7 text-teal-800">{t.emptyHint}</p>
           )}
         </div>
       </section>

@@ -5,14 +5,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, LoaderCircle, Lock, LogIn, Mail, User } from "lucide-react";
 
+import { useLocale } from "@/components/providers/locale-provider";
 import { BrandMark } from "@/components/site/brand-mark";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-const NOT_CONNECTED =
-  "Sign-in isn't connected yet — add your Supabase keys to .env.local to enable accounts.";
-
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
+  const { messages } = useLocale();
   const router = useRouter();
   const params = useSearchParams();
   const redirect = params.get("redirect") || "/dashboard";
@@ -33,7 +32,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     setNotice("");
 
     if (!isSupabaseConfigured) {
-      setError(NOT_CONNECTED);
+      setError(messages.auth.notConnected);
       return;
     }
 
@@ -50,7 +49,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         },
       });
       if (signUpError) setError(signUpError.message);
-      else setNotice("Check your email to confirm your account, then sign in.");
+      else setNotice(messages.auth.checkEmail);
     } else {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) setError(signInError.message);
@@ -66,7 +65,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   async function handleGoogle() {
     setError("");
     if (!isSupabaseConfigured) {
-      setError(NOT_CONNECTED);
+      setError(messages.auth.notConnected);
       return;
     }
     const supabase = createClient();
@@ -82,11 +81,11 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     setError("");
     setNotice("");
     if (!isSupabaseConfigured) {
-      setError(NOT_CONNECTED);
+      setError(messages.auth.notConnected);
       return;
     }
     if (!email) {
-      setError("Enter your email above first, then tap reset.");
+      setError(messages.auth.enterEmailFirst);
       return;
     }
     const supabase = createClient();
@@ -94,7 +93,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       redirectTo: `${location.origin}/auth/callback?next=/dashboard`,
     });
     if (resetError) setError(resetError.message);
-    else setNotice("If that email exists, a password reset link is on its way.");
+    else setNotice(messages.auth.resetSent);
   }
 
   return (
@@ -111,7 +110,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       {/* Brand mark, top-left. */}
       <Link href="/" className="logo-hover absolute left-6 top-6 flex items-center gap-2.5">
         <BrandMark className="size-9" priority />
-        <span className="font-display text-lg font-bold tracking-tight text-ink">ResourceHive</span>
+        <span className="font-display text-lg font-bold tracking-tight text-ink">{messages.shell.brandName}</span>
       </Link>
 
       {/* Inline maxWidth: the global `div { max-width: 100% }` rule in globals.css
@@ -125,12 +124,12 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             <LogIn className="size-6" />
           </div>
           <h1 className="mt-5 font-display text-3xl font-bold text-ink">
-            {isSignup ? "Create your account" : "Sign in with email"}
+            {isSignup ? messages.auth.signupTitle : messages.auth.loginTitle}
           </h1>
           <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
             {isSignup
-              ? "Join ResourceHive to save resources and manage your own hive."
-              : "Welcome back. Sign in to reach your dashboard and saved resources."}
+              ? messages.auth.signupDescription
+              : messages.auth.loginDescription}
           </p>
         </div>
 
@@ -139,7 +138,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             <Field icon={<User className="size-4" />}>
               <input
                 type="text"
-                placeholder="Full name"
+                placeholder={messages.common.fullName}
                 autoComplete="name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
@@ -152,7 +151,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <Field icon={<Mail className="size-4" />}>
             <input
               type="email"
-              placeholder="Email"
+              placeholder={messages.common.emailAddress}
               autoComplete="off"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -164,7 +163,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <Field icon={<Lock className="size-4" />}>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              placeholder={messages.auth.password}
               autoComplete="off"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -175,7 +174,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? messages.auth.hidePassword : messages.auth.showPassword}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted transition hover:text-ink"
             >
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -189,7 +188,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
                 onClick={handleForgotPassword}
                 className="text-sm font-medium text-teal-700 transition hover:text-honey-600"
               >
-                Forgot password?
+                {messages.auth.forgotPassword}
               </button>
             </div>
           ) : null}
@@ -211,13 +210,13 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             className="interactive-glow mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,var(--teal-800),var(--ink))] text-sm font-semibold text-white shadow-e3 transition hover:-translate-y-0.5 hover:shadow-[var(--glow-teal)] disabled:opacity-60"
           >
             {loading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-            {isSignup ? "Get started" : "Sign in"}
+            {isSignup ? messages.auth.getStarted : messages.auth.signIn}
           </button>
         </form>
 
         <div className="my-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
           <span className="h-px flex-1 bg-[var(--border)]" />
-          {isSignup ? "Or sign up with" : "Or sign in with"}
+          {isSignup ? messages.auth.orSignUpWith : messages.auth.orSignInWith}
           <span className="h-px flex-1 bg-[var(--border)]" />
         </div>
 
@@ -227,16 +226,16 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           className="interactive-glow flex w-full items-center justify-center gap-3 rounded-full border border-[var(--border-strong)] bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white/90"
         >
           <GoogleIcon />
-          Continue with Google
+          {messages.auth.continueWithGoogle}
         </button>
 
         <p className="mt-7 text-center text-sm text-muted">
-          {isSignup ? "Already have an account? " : "New to ResourceHive? "}
+          {isSignup ? messages.auth.alreadyHaveAccount : messages.auth.newToResourceHive}
           <Link
             href={isSignup ? "/login" : "/signup"}
             className="font-semibold text-teal-700 hover:text-honey-600"
           >
-            {isSignup ? "Sign in" : "Create an account"}
+            {isSignup ? messages.auth.signIn : messages.auth.createAccount}
           </Link>
         </p>
       </div>

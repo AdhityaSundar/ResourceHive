@@ -47,12 +47,12 @@ export function VolunteerDonate() {
             <Link href="/contact">
               <Button size="lg" className="gap-2">
                 <Heart className="size-4" />
-                Become a volunteer
+                {messages.home.becomeVolunteer}
               </Button>
             </Link>
             <Link href="/contact">
               <Button variant="secondary" size="lg">
-                Donate
+                {messages.home.donate}
               </Button>
             </Link>
           </div>

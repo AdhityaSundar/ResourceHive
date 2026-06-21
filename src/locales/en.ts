@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
+
 export const en = {
   nav: {
     home: "Home",
@@ -19,8 +21,7 @@ export const en = {
     platform: "Platform",
     needSupport: "Need support?",
     emergencyLine: "Emergency line: 211",
-    email: "Email: hello@resourcehive.org",
-    volunteerDesk: "Volunteer desk: volunteer@resourcehive.org",
+    email: `Email: ${CONTACT_EMAIL}`,
     footerDescription:
       "Connecting communities to the resources they need with modern search, map-based discovery, and practical tools for families, job seekers, and nonprofit teams.",
     menuToggleAria: "Toggle menu",
@@ -65,6 +66,22 @@ export const en = {
     exploreResults: "Explore results",
     openMap: "Open map",
     sendMessage: "Send message",
+    sendingMessage: "Sending...",
+    contactMessageSent: "Thanks. Your message was sent.",
+    contactMessageSetupRequired:
+      "Email delivery is not configured yet. Add RESEND_API_KEY to enable this form.",
+    contactMessageInvalidApiKey:
+      "Resend rejected the API key. Create a new key, paste the full key into .env.local, and restart the dev server.",
+    contactMessageSenderNotVerified:
+      "Email sending is not fully set up yet. Please use the direct email link below.",
+    contactMessageFailed:
+      "We could not send the message right now. Please email us directly.",
+    emailDirectly: "Email {email} directly",
+    notProvided: "Not provided",
+    urgentSupport: "Urgent support",
+    browseResourcesByCity: "Browse resources by city",
+    viewGrid: "Grid view",
+    viewList: "List view",
     fullName: "Full name",
     emailAddress: "Email address",
     organization: "Organization",
@@ -110,6 +127,16 @@ export const en = {
     heroDescription:
       "Browse food support, shelter, healthcare, jobs, and education resources through a calm, modern directory built for clarity.",
     browseDirectory: "Browse directory",
+    yourFavorites: "Your favorites",
+    heroTitleFindThe: "Find the",
+    heroTitleHelp: "help",
+    heroTitleYouNeed: "you need",
+    heroTitleMost: "most",
+    heroLead: "Real people, real resources, updated daily.",
+    heroLeadStatic:
+      "Real people, real resources, updated daily. Find food, shelter, jobs, and care near you.",
+    findHelpIn: "Find help in",
+    scrollHint: "Scroll",
     previewLabel: "Preview",
     statsResources: "Resources live",
     statsCategories: "Community categories",
@@ -143,6 +170,20 @@ export const en = {
     volunteerPoint1: "Sponsor emergency meal kits or hygiene supplies.",
     volunteerPoint2: "Volunteer for translation, transportation, or intake support.",
     volunteerPoint3: "Partner with ResourceHive to publish verified local listings.",
+    becomeVolunteer: "Become a volunteer",
+    donate: "Donate",
+    howItWorksEyebrow: "How it works",
+    howItWorksTitle: "Help in three simple steps",
+    howItWorksDescription:
+      "No sign-ups or jargon - just the fastest path from a need to real, local support.",
+    step1Title: "Tell us what you need",
+    step1Text: "Pick a need - food, shelter, a clinic - or just type it. No account, no forms.",
+    step2Title: "See what's open nearby",
+    step2Text:
+      "Browse verified listings with real hours, eligibility, and location - on a map or in a list.",
+    step3Title: "Reach out with confidence",
+    step3Text:
+      "Call, get directions, or save it for later - every detail you need before you go.",
   },
   about: {
     eyebrow: "About ResourceHive",
@@ -165,7 +206,31 @@ export const en = {
       "Reach out to partner, submit a resource update, or ask how ResourceHive can support your organization.",
     hub: "Dallas-Fort Worth community operations hub",
   },
+  auth: {
+    notConnected:
+      "Sign-in isn't connected yet - add your Supabase keys to .env.local to enable accounts.",
+    signupTitle: "Create your account",
+    loginTitle: "Sign in with email",
+    signupDescription: "Join ResourceHive to save resources and manage your own hive.",
+    loginDescription: "Welcome back. Sign in to reach your dashboard and saved resources.",
+    password: "Password",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
+    forgotPassword: "Forgot password?",
+    getStarted: "Get started",
+    signIn: "Sign in",
+    orSignUpWith: "Or sign up with",
+    orSignInWith: "Or sign in with",
+    continueWithGoogle: "Continue with Google",
+    alreadyHaveAccount: "Already have an account? ",
+    newToResourceHive: "New to ResourceHive? ",
+    createAccount: "Create an account",
+    checkEmail: "Check your email to confirm your account, then sign in.",
+    enterEmailFirst: "Enter your email above first, then tap reset.",
+    resetSent: "If that email exists, a password reset link is on its way.",
+  },
   faq: {
+    eyebrow: "ResourceHive help",
     title: "Frequently asked questions",
     q1: "How does ResourceHive decide which listings appear first?",
     a1: "Results can be filtered by city and category, while AI recommendations prioritize the resources that best match selected needs and proximity.",

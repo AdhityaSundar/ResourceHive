@@ -86,7 +86,7 @@ export function HeroSearchExperience({
   }, [city, debouncedQuery, selectedNeeds, startSearchTransition]);
 
   return (
-    <div className="panel-amber rounded-[36px] p-6 sm:p-8">
+    <div className="panel-amber panel-amber-drip-bottom rounded-[36px] p-6 sm:p-8">
       <div className="mx-auto w-full max-w-2xl space-y-6">
           <div className="mx-auto flex w-fit items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
             <HexGlyph className="size-3 opacity-80" />

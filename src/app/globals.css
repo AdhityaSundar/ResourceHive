@@ -51,6 +51,9 @@
   --shadow-e4: 0 22px 50px rgba(11, 79, 84, 0.16), 0 4px 12px rgba(20, 38, 43, 0.08);
   --glow-warm: 0 18px 44px rgba(224, 133, 12, 0.22);
   --glow-teal: 0 18px 44px rgba(14, 124, 134, 0.2);
+
+  /* Signature easing — a confident, premium settle used across hovers + reveals. */
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
@@ -146,25 +149,42 @@ h4 {
   border: 1px solid var(--border);
   backdrop-filter: blur(16px);
   box-shadow: var(--shadow-e3), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition: transform 0.4s var(--ease-premium), box-shadow 0.4s var(--ease-premium);
 }
 
 /* Shiny amber finish for the large tool/feature panels (search, volunteer). */
 .panel-amber {
   position: relative;
-  background: linear-gradient(157deg, #fff7e6 0%, #fce3aa 46%, #f7cb6a 100%);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 34%),
+    linear-gradient(157deg, #fff7e6 0%, #fce3aa 46%, #f7cb6a 100%);
   border: 1px solid rgba(217, 158, 40, 0.45);
   box-shadow:
     0 18px 46px rgba(180, 120, 20, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
-.panel-amber::before {
+/* Honey running off the BOTTOM edge. One continuous shape: a wavy honey film
+   (concave between drips, so there's no flat "bar") with teardrops of varying
+   length hanging from it. Tiles horizontally to fit any width. Decorative. */
+.panel-amber-drip-bottom {
+  margin-bottom: 74px;
+}
+
+.panel-amber-drip-bottom::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: 26px;
+  right: 26px;
+  top: 100%;
+  height: 72px;
+  margin-top: -14px;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 34%);
+  background-repeat: repeat-x;
+  background-position: left top;
+  background-size: 248px 72px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='248' height='72' viewBox='0 0 248 72'%3E%3Cdefs%3E%3ClinearGradient id='h' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f8d27a'/%3E%3Cstop offset='1' stop-color='%23df8f29'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23h)'%3E%3Cpath d='M0,0 H248 V8 C232,7 222,10 210,13 C202,15 199,17 196,18 C190,12 180,9 168,8 C150,7 138,10 128,13 C123,15 122,16 120,16 C113,11 104,9 92,8 C74,7 58,10 50,13 C45,15 43,16 40,18 C30,11 18,9 0,8 Z'/%3E%3Crect x='31' y='0' width='18' height='34' rx='9'/%3E%3Ccircle cx='40' cy='40' r='12'/%3E%3Crect x='112' y='0' width='16' height='22' rx='8'/%3E%3Ccircle cx='120' cy='26' r='10'/%3E%3Crect x='187' y='0' width='18' height='46' rx='9'/%3E%3Ccircle cx='196' cy='52' r='12'/%3E%3Ccircle cx='156' cy='24' r='4.5'/%3E%3C/g%3E%3Cg fill='%23ffffff' opacity='0.5'%3E%3Cellipse cx='36' cy='35' rx='3.2' ry='4.6'/%3E%3Cellipse cx='117' cy='23' rx='2.4' ry='3.4'/%3E%3Cellipse cx='192' cy='48' rx='2.8' ry='4'/%3E%3C/g%3E%3C/svg%3E");
+  filter: drop-shadow(0 7px 6px rgba(170, 110, 18, 0.28));
 }
 
 /* Brushed "shiny steel" finish for resource cards. Pair with a per-category
@@ -176,7 +196,7 @@ h4 {
   box-shadow:
     0 12px 30px rgba(38, 58, 80, 0.13),
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.45s var(--ease-premium), box-shadow 0.45s var(--ease-premium);
 }
 
 .card-steel:hover {

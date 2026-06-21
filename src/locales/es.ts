@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
+
 export const es = {
   nav: {
     home: "Inicio",
@@ -19,8 +21,7 @@ export const es = {
     platform: "Plataforma",
     needSupport: "¿Necesitas apoyo?",
     emergencyLine: "Línea de emergencia: 211",
-    email: "Correo: hello@resourcehive.org",
-    volunteerDesk: "Voluntariado: volunteer@resourcehive.org",
+    email: `Correo: ${CONTACT_EMAIL}`,
     footerDescription:
       "Conectamos comunidades con los recursos que necesitan mediante búsqueda moderna, descubrimiento por mapa y herramientas prácticas para familias, personas en búsqueda de empleo y equipos sin fines de lucro.",
     menuToggleAria: "Abrir o cerrar menú",
@@ -66,6 +67,22 @@ export const es = {
     exploreResults: "Explorar resultados",
     openMap: "Abrir mapa",
     sendMessage: "Enviar mensaje",
+    sendingMessage: "Enviando...",
+    contactMessageSent: "Gracias. Tu mensaje fue enviado.",
+    contactMessageSetupRequired:
+      "La entrega de correo aún no está configurada. Agrega RESEND_API_KEY para habilitar este formulario.",
+    contactMessageInvalidApiKey:
+      "Resend rechazó la clave API. Crea una clave nueva, pega la clave completa en .env.local y reinicia el servidor de desarrollo.",
+    contactMessageSenderNotVerified:
+      "El envío de correo aún no está completamente configurado. Usa el enlace directo de correo abajo.",
+    contactMessageFailed:
+      "No pudimos enviar el mensaje ahora. Envíanos un correo directamente.",
+    emailDirectly: "Enviar correo a {email} directamente",
+    notProvided: "No proporcionado",
+    urgentSupport: "Apoyo urgente",
+    browseResourcesByCity: "Explorar recursos por ciudad",
+    viewGrid: "Vista de cuadr\u00edcula",
+    viewList: "Vista de lista",
     fullName: "Nombre completo",
     emailAddress: "Correo electrónico",
     organization: "Organización",
@@ -111,6 +128,16 @@ export const es = {
     heroDescription:
       "Explora recursos de alimentos, refugio, salud, empleo y educación en un directorio moderno y tranquilo diseñado para la claridad.",
     browseDirectory: "Explorar directorio",
+    yourFavorites: "Tus favoritos",
+    heroTitleFindThe: "Encuentra la",
+    heroTitleHelp: "ayuda",
+    heroTitleYouNeed: "que necesitas",
+    heroTitleMost: "m\u00e1s",
+    heroLead: "Personas reales, recursos reales, actualizados todos los d\u00edas.",
+    heroLeadStatic:
+      "Personas reales, recursos reales, actualizados todos los d\u00edas. Encuentra comida, refugio, empleo y atenci\u00f3n cerca de ti.",
+    findHelpIn: "Encuentra ayuda en",
+    scrollHint: "Despl\u00e1zate",
     previewLabel: "Vista previa",
     statsResources: "Recursos activos",
     statsCategories: "Categorías comunitarias",
@@ -144,6 +171,21 @@ export const es = {
     volunteerPoint1: "Patrocina kits de comida de emergencia o suministros de higiene.",
     volunteerPoint2: "Haz voluntariado para traducción, transporte o apoyo de admisión.",
     volunteerPoint3: "Asóciate con ResourceHive para publicar listados locales verificados.",
+    becomeVolunteer: "Ser voluntario",
+    donate: "Donar",
+    howItWorksEyebrow: "C\u00f3mo funciona",
+    howItWorksTitle: "Ayuda en tres pasos sencillos",
+    howItWorksDescription:
+      "Sin registros ni tecnicismos: solo el camino m\u00e1s r\u00e1pido desde una necesidad hasta apoyo local real.",
+    step1Title: "Dinos qu\u00e9 necesitas",
+    step1Text:
+      "Elige una necesidad: comida, refugio, una cl\u00ednica, o simplemente escr\u00edbela. Sin cuenta ni formularios.",
+    step2Title: "Mira qu\u00e9 est\u00e1 abierto cerca",
+    step2Text:
+      "Explora listados verificados con horarios reales, elegibilidad y ubicaci\u00f3n, en un mapa o en una lista.",
+    step3Title: "Comun\u00edcate con confianza",
+    step3Text:
+      "Llama, obt\u00e9n direcciones o gu\u00e1rdalo para despu\u00e9s: todo lo que necesitas saber antes de ir.",
   },
   about: {
     eyebrow: "Acerca de ResourceHive",
@@ -166,7 +208,31 @@ export const es = {
       "Contáctanos para colaborar, enviar una actualización de recurso o preguntar cómo ResourceHive puede apoyar a tu organización.",
     hub: "Centro comunitario de operaciones de Dallas-Fort Worth",
   },
+  auth: {
+    notConnected:
+      "El inicio de sesi\u00f3n a\u00fan no est\u00e1 conectado. Agrega tus claves de Supabase a .env.local para habilitar cuentas.",
+    signupTitle: "Crea tu cuenta",
+    loginTitle: "Inicia sesi\u00f3n con correo",
+    signupDescription: "\u00danete a ResourceHive para guardar recursos y administrar tu propia colmena.",
+    loginDescription: "Bienvenido de nuevo. Inicia sesi\u00f3n para ver tu panel y recursos guardados.",
+    password: "Contrase\u00f1a",
+    hidePassword: "Ocultar contrase\u00f1a",
+    showPassword: "Mostrar contrase\u00f1a",
+    forgotPassword: "\u00bfOlvidaste tu contrase\u00f1a?",
+    getStarted: "Comenzar",
+    signIn: "Iniciar sesi\u00f3n",
+    orSignUpWith: "O reg\u00edstrate con",
+    orSignInWith: "O inicia sesi\u00f3n con",
+    continueWithGoogle: "Continuar con Google",
+    alreadyHaveAccount: "\u00bfYa tienes una cuenta? ",
+    newToResourceHive: "\u00bfNuevo en ResourceHive? ",
+    createAccount: "Crear una cuenta",
+    checkEmail: "Revisa tu correo para confirmar tu cuenta y luego inicia sesi\u00f3n.",
+    enterEmailFirst: "Primero ingresa tu correo arriba y luego toca restablecer.",
+    resetSent: "Si ese correo existe, el enlace para restablecer la contrase\u00f1a ya va en camino.",
+  },
   faq: {
+    eyebrow: "Ayuda de ResourceHive",
     title: "Preguntas frecuentes",
     q1: "¿Cómo decide ResourceHive qué listados aparecen primero?",
     a1: "Los resultados pueden filtrarse por ciudad y categoría, mientras que las recomendaciones con IA priorizan los recursos que mejor coinciden con las necesidades seleccionadas y la cercanía.",

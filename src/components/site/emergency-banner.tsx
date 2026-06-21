@@ -13,7 +13,7 @@ export function EmergencyBanner() {
   return (
     <motion.div
       role="region"
-      aria-label="Urgent support"
+      aria-label={messages.common.urgentSupport}
       initial={prefersReducedMotion ? false : { opacity: 0, y: -12 }}
       animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}

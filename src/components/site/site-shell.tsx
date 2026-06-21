@@ -155,7 +155,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                   {messages.shell.emergencyLine}
                 </p>
                 <p>{messages.shell.email}</p>
-                <p>{messages.shell.volunteerDesk}</p>
               </div>
             </div>
           </div>
@@ -164,7 +163,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <p className="text-xs text-muted">
               © {new Date().getFullYear()} {messages.shell.brandName} · {messages.shell.brandSubtitle}
             </p>
-            <p className="text-xs text-muted">{messages.shell.volunteerDesk}</p>
           </div>
         </div>
       </footer>

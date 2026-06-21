@@ -130,6 +130,7 @@ export function ResourceDirectoryClient({
           <button
             type="button"
             onClick={() => setView("grid")}
+            aria-label={messages.common.viewGrid}
             className={`interactive-glow rounded-full p-2 ${
               view === "grid"
                 ? "bg-teal-100 text-teal-700"
@@ -141,6 +142,7 @@ export function ResourceDirectoryClient({
           <button
             type="button"
             onClick={() => setView("list")}
+            aria-label={messages.common.viewList}
             className={`interactive-glow rounded-full p-2 ${
               view === "list"
                 ? "bg-teal-100 text-teal-700"
@@ -185,5 +187,4 @@ export function ResourceDirectoryClient({
     </div>
   );
 }
-
 
