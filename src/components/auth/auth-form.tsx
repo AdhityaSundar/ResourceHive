@@ -98,13 +98,15 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
   return (
     <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 py-12">
-      {/* Airy, on-brand backdrop: warm/teal pooling, faint honeycomb, soft arcs. */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(244,190,78,0.20),transparent_46%),radial-gradient(circle_at_12%_88%,rgba(14,124,134,0.16),transparent_42%),radial-gradient(circle_at_88%_82%,rgba(224,133,12,0.12),transparent_42%)]" />
-        <div className="honeycomb-texture-light absolute inset-0 opacity-50" />
-        <div className="absolute left-1/2 top-1/2 size-[125vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/50" />
-        <div className="absolute left-1/2 top-1/2 size-[92vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/35" />
-        <div className="absolute left-1/2 top-1/2 size-[62vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/25" />
+      {/* Immersive sky backdrop: gradient sky, a soft sun glow, two layers of
+          drifting clouds for depth, and a light haze at the bottom so the card
+          reads clearly. Drift pauses under prefers-reduced-motion (globals). */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,#a6d2f0_0%,#c2def3_32%,#e3f0fa_64%,#f7fbff_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(58%_46%_at_84%_6%,rgba(255,255,255,0.75),transparent_62%)]" />
+        <div className="auth-clouds auth-clouds--back absolute inset-0" />
+        <div className="auth-clouds auth-clouds--front absolute inset-0" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.6))]" />
       </div>
 
       {/* Brand mark, top-left. */}
