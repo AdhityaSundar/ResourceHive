@@ -9,7 +9,6 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { BrandMark } from "@/components/site/brand-mark";
 import { LanguageToggle } from "@/components/site/language-toggle";
-import { ThemeToggle } from "@/components/site/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/utils";
@@ -65,7 +64,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             {mounted ? (
               <>
                 <LanguageToggle />
-                <ThemeToggle />
                 {user ? (
                   <Button variant="secondary" size="sm" onClick={() => logout()}>
                     {messages.shell.signOut}
@@ -100,7 +98,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               <>
                 <div className="mt-3 flex gap-2">
                   <LanguageToggle />
-                  <ThemeToggle />
                 </div>
                 {user ? (
                   <Button size="sm" onClick={() => logout()}>
