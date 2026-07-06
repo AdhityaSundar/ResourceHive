@@ -14,7 +14,13 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const { messages } = useLocale();
   const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get("redirect") || "/dashboard";
+  // Only allow same-origin relative paths as the post-login target, so a crafted
+  // ?redirect= can't bounce the user to an external phishing site after login.
+  const rawRedirect = params.get("redirect");
+  const redirect =
+    rawRedirect && rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
+      ? rawRedirect
+      : "/";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
