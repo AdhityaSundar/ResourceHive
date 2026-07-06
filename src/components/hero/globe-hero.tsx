@@ -19,7 +19,7 @@ const GlobeCanvas = dynamic(
   { ssr: false, loading: () => null },
 );
 
-const ACCENT = "text-purple-400 accent-glow";
+const ACCENT = "text-honey-300 [text-shadow:0_2px_30px_rgba(224,133,12,0.55)]";
 const HEADLINE_CLASS =
   "font-display text-[clamp(2rem,4.6vw,4rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_2px_24px_rgba(7,33,42,0.7)]";
 
@@ -144,6 +144,14 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
 
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
+  // Creative depth: the globe pulls back (scales down), arcs vertically, and
+  // tilts as it travels — more dimensional than a flat side-slide. The backdrop
+  // drifts in scale behind it for parallax.
+  const globeScale = useTransform(scrollYProgress, [0, 1], [1.12, 0.92]);
+  const globeY = useTransform(scrollYProgress, [0, 0.5, 1], ["0vh", "-4vh", "2vh"]);
+  const globeRotate = useTransform(scrollYProgress, [0, 1], [-6, 3]);
+  const backdropScale = useTransform(scrollYProgress, [0, 1], [1.06, 1.18]);
+
   return (
     <section
       ref={outerRef}
@@ -152,7 +160,9 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
       style={{ height: "280vh" }}
     >
       <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden">
-        <HeroBackdrop />
+        <motion.div style={{ scale: backdropScale }} className="absolute inset-0">
+          <HeroBackdrop />
+        </motion.div>
 
         {/* Urgent banner stays pinned + visible through the whole sequence */}
         <div className="relative z-30 pt-20">
@@ -161,7 +171,10 @@ function PinnedGlobeHero({ mode, markers }: { mode: "full" | "lite"; markers: Gl
 
         {/* Globe — nudged down (banner clearance) + travels left with the text */}
         <div className="absolute inset-0 z-[1] translate-y-[7vh]">
-          <motion.div style={{ x: globeX }} className="absolute inset-0">
+          <motion.div
+            style={{ x: globeX, y: globeY, scale: globeScale, rotate: globeRotate }}
+            className="absolute inset-0"
+          >
             <GlobeCanvas mode={mode} progress={scrollYProgress} />
           </motion.div>
         </div>

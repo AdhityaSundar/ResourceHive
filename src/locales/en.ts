@@ -25,6 +25,7 @@ export const en = {
     footerDescription:
       "Connecting communities to the resources they need with modern search, map-based discovery, and practical tools for families, job seekers, and nonprofit teams.",
     menuToggleAria: "Toggle menu",
+    skipToContent: "Skip to content",
     themeToggleAria: "Toggle dark mode",
   },
   common: {

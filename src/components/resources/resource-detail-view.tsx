@@ -1,13 +1,59 @@
-﻿"use client";
+"use client";
 
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowLeft, Clock3, Globe, Info, Languages, Mail, MapPin, Navigation, Phone, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  BriefcaseBusiness,
+  Clock3,
+  Globe,
+  GraduationCap,
+  HeartPulse,
+  Home,
+  Info,
+  Languages,
+  LifeBuoy,
+  Mail,
+  MapPin,
+  Navigation,
+  Phone,
+  Scale,
+  Soup,
+  Sparkles,
+  UserRound,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 
 import { useLocale } from "@/components/providers/locale-provider";
-import { Badge } from "@/components/ui/badge";
+import { categoryAccent } from "@/lib/category-accent";
 import { localizeCategory, localizeLanguage } from "@/lib/i18n";
 import type { Resource } from "@/lib/types";
 import { formatLocation, formatPhone, getDirectionsUrl, websiteLabel, websiteUrl } from "@/lib/utils";
+
+const CATEGORY_ICON: Record<string, LucideIcon> = {
+  Food: Soup,
+  Shelter: Home,
+  Jobs: BriefcaseBusiness,
+  Healthcare: HeartPulse,
+  Education: GraduationCap,
+  Community: Users,
+  Legal: Scale,
+  Youth: Sparkles,
+  Resource: LifeBuoy,
+};
+
+// A dark-glass info tile (icon + text), used across the detail page.
+function InfoTile({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
+  return (
+    <div className="rounded-[28px] border border-white/12 bg-white/[0.05] p-5 backdrop-blur">
+      <div className="flex gap-3 text-white/85">
+        <Icon className="mt-0.5 size-4 shrink-0 text-teal-300" />
+        <span className="leading-6">{children}</span>
+      </div>
+    </div>
+  );
+}
 
 export function ResourceDetailView({
   resource,
@@ -23,153 +69,197 @@ export function ResourceDetailView({
   const languages = resource.languages.map((language) => localizeLanguage(language, locale)).join(", ");
   const services = resource.services.filter(Boolean);
   const tags = resource.tags.filter(Boolean);
+  const accent = categoryAccent(resource.category);
+  const Icon = CATEGORY_ICON[resource.category] ?? LifeBuoy;
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-      <Link href="/resources" className="inline-flex items-center gap-2 text-sm font-semibold text-teal-600 transition hover:text-teal-500">
-        <ArrowLeft className="size-4" />
-        {messages.common.backToDirectory}
-      </Link>
+    <div
+      style={{ "--accent": accent } as CSSProperties}
+      className="relative min-h-screen overflow-hidden bg-teal-900"
+    >
+      <div className="honeycomb-texture-dark pointer-events-none absolute inset-0 opacity-50" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[26rem] bg-[radial-gradient(circle_at_top,rgba(14,124,134,0.42),transparent_60%)]" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 -top-24 size-[32rem] rounded-full opacity-25 blur-3xl"
+        style={{ background: "var(--accent)" }}
+      />
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_0.7fr]">
-        <section className="glass-panel rounded-[34px] p-8">
-          <Badge tone="teal">{localizeCategory(resource.category, locale)}</Badge>
-          <h1 className="mt-5 text-5xl font-bold text-ink">{resource.name}</h1>
-          {resource.description ? (
-            <p className="mt-5 max-w-3xl text-base leading-8 text-muted">{resource.description}</p>
-          ) : null}
-          {resource.info && resource.info !== resource.description ? (
-            <div className="mt-5 rounded-[28px] border border-white/40 bg-white/55 p-5">
-              <div className="flex gap-3 text-ink-soft"><Info className="mt-1 size-4 text-teal-500" /><span>{resource.info}</span></div>
+      <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <Link
+          href="/resources"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-teal-200 transition hover:text-honey-300"
+        >
+          <ArrowLeft className="size-4" />
+          {messages.common.backToDirectory}
+        </Link>
+
+        <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_0.7fr]">
+          <section className="relative overflow-hidden rounded-[34px] border border-white/[0.14] bg-white/[0.055] p-8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{ background: "linear-gradient(160deg, color-mix(in srgb, var(--accent) 22%, transparent), transparent 48%)" }}
+            />
+            <div className="relative flex items-center gap-3">
+              <span className="relative grid size-12 shrink-0 place-items-center">
+                <span className="absolute inset-0 hex-clip" style={{ background: "var(--accent)" }} />
+                <span className="absolute inset-[2px] hex-clip bg-[#0c2b31]" />
+                <Icon className="relative size-5" style={{ color: "var(--accent)" }} strokeWidth={2} />
+              </span>
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/75">
+                {localizeCategory(resource.category, locale)}
+              </span>
             </div>
-          ) : null}
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {location ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft"><MapPin className="mt-1 size-4 text-teal-500" /><span>{location}</span></div>
+            <h1 className="relative mt-5 text-balance font-display text-4xl font-bold leading-tight text-white sm:text-5xl">
+              {resource.name}
+            </h1>
+            {resource.description ? (
+              <p className="relative mt-5 max-w-3xl text-base leading-8 text-white/80">{resource.description}</p>
+            ) : null}
+            {resource.info && resource.info !== resource.description ? (
+              <div className="relative mt-5">
+                <InfoTile icon={Info}>{resource.info}</InfoTile>
               </div>
             ) : null}
-            {phone ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft"><Phone className="mt-1 size-4 text-teal-500" /><span>{phone}</span></div>
-              </div>
-            ) : null}
-            {resource.hours ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft"><Clock3 className="mt-1 size-4 text-teal-500" /><span>{resource.hours}</span></div>
-              </div>
-            ) : null}
-            {languages ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft"><Languages className="mt-1 size-4 text-teal-500" /><span>{languages}</span></div>
-              </div>
-            ) : null}
-            {resource.email ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft"><Mail className="mt-1 size-4 text-teal-500" /><span>{resource.email}</span></div>
-              </div>
-            ) : null}
-            {resource.contactName ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft"><UserRound className="mt-1 size-4 text-teal-500" /><span>{resource.contactName}</span></div>
-              </div>
-            ) : null}
-            {siteHref ? (
-              <div className="rounded-[28px] border border-white/40 bg-white/55 p-5">
-                <div className="flex gap-3 text-ink-soft">
-                  <Globe className="mt-1 size-4 text-teal-500" />
-                  <a href={siteHref} target="_blank" rel="noopener noreferrer" className="break-all font-medium text-teal-700 transition hover:text-honey-600">
+
+            <div className="relative mt-8 grid gap-4 md:grid-cols-2">
+              {location ? <InfoTile icon={MapPin}>{location}</InfoTile> : null}
+              {phone ? <InfoTile icon={Phone}>{phone}</InfoTile> : null}
+              {resource.hours ? <InfoTile icon={Clock3}>{resource.hours}</InfoTile> : null}
+              {languages ? <InfoTile icon={Languages}>{languages}</InfoTile> : null}
+              {resource.email ? <InfoTile icon={Mail}>{resource.email}</InfoTile> : null}
+              {resource.contactName ? <InfoTile icon={UserRound}>{resource.contactName}</InfoTile> : null}
+              {siteHref ? (
+                <InfoTile icon={Globe}>
+                  <a
+                    href={siteHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="break-all font-medium text-teal-200 transition hover:text-honey-300"
+                  >
                     {websiteLabel(resource.website)}
                   </a>
+                </InfoTile>
+              ) : null}
+            </div>
+
+            {services.length ? (
+              <div className="relative mt-8 rounded-[28px] border border-white/12 bg-white/[0.05] p-5 backdrop-blur">
+                <h2 className="text-xl font-bold text-white">{messages.common.services}</h2>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {services.map((service) => (
+                    <span
+                      key={service}
+                      className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-white/85"
+                    >
+                      {service}
+                    </span>
+                  ))}
                 </div>
               </div>
             ) : null}
-          </div>
 
-          {services.length ? (
-            <div className="mt-8 rounded-[28px] border border-white/40 bg-white/55 p-5">
-              <h2 className="text-xl font-bold text-ink">{messages.common.services}</h2>
-              <div className="mt-4 flex flex-wrap gap-3">
-                {services.map((service) => (
-                  <Badge key={service} tone="teal">
-                    {service}
-                  </Badge>
+            {resource.eligibility ? (
+              <div className="relative mt-8 rounded-[28px] border border-white/12 bg-white/[0.05] p-5 backdrop-blur">
+                <h2 className="text-xl font-bold text-white">{messages.common.eligibility}</h2>
+                <p className="mt-3 text-sm leading-7 text-white/75">{resource.eligibility}</p>
+              </div>
+            ) : null}
+
+            {tags.length ? (
+              <div className="relative mt-8 flex flex-wrap gap-2.5">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-xs font-semibold text-white/70"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
-            </div>
-          ) : null}
+            ) : null}
+          </section>
 
-          {resource.eligibility ? (
-            <div className="mt-8 rounded-[28px] border border-white/40 bg-white/55 p-5">
-              <h2 className="text-xl font-bold text-ink">{messages.common.eligibility}</h2>
-              <p className="mt-3 text-sm leading-7 text-muted">{resource.eligibility}</p>
+          <aside className="space-y-5">
+            <div className="relative overflow-hidden rounded-[30px] border border-white/[0.14] bg-white/[0.055] p-6 backdrop-blur-xl">
+              <h2 className="text-2xl font-bold text-white">{messages.common.reachOut}</h2>
+              <div className="mt-4 space-y-3">
+                {siteHref ? (
+                  <a
+                    href={siteHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="interactive-glow flex items-center gap-3 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-teal-900 transition hover:-translate-y-0.5 hover:bg-white/90"
+                  >
+                    <Globe className="size-4 text-teal-700" />
+                    {messages.common.visitWebsite}
+                  </a>
+                ) : null}
+                {phone ? (
+                  <a
+                    href={`tel:${resource.phone.replace(/[^\d+]/g, "")}`}
+                    className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+                  >
+                    <Phone className="size-4 text-teal-300" />
+                    {phone}
+                  </a>
+                ) : null}
+                {resource.email ? (
+                  <a
+                    href={`mailto:${resource.email}`}
+                    className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+                  >
+                    <Mail className="size-4 text-teal-300" />
+                    {resource.email}
+                  </a>
+                ) : null}
+                {resource.address ? (
+                  <a
+                    href={getDirectionsUrl(resource)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+                  >
+                    <Navigation className="size-4 text-teal-300" />
+                    {messages.common.getDirections}
+                  </a>
+                ) : null}
+                {!siteHref && !phone && !resource.email && !resource.address ? (
+                  <p className="text-sm leading-7 text-white/70">{messages.common.unavailable}</p>
+                ) : null}
+              </div>
+              {location ? <p className="mt-4 text-sm leading-7 text-white/60">{location}</p> : null}
             </div>
-          ) : null}
 
-          {tags.length ? (
-            <div className="mt-8 flex flex-wrap gap-3">
-              {tags.map((tag) => (
-                <Badge key={tag}>{tag}</Badge>
-              ))}
+            <div className="rounded-[30px] border border-white/[0.14] bg-white/[0.055] p-6 backdrop-blur-xl">
+              <h2 className="text-2xl font-bold text-white">{messages.common.whyThisMatters}</h2>
+              <p className="mt-4 text-sm leading-7 text-white/75">{messages.resourceDetail.whyThisMattersText}</p>
             </div>
-          ) : null}
 
-        </section>
-
-        <aside className="space-y-5">
-          <div className="glass-panel rounded-[30px] p-6">
-            <h2 className="text-2xl font-bold text-ink">{messages.common.reachOut}</h2>
-            <div className="mt-4 space-y-3">
-              {siteHref ? (
-                <a href={siteHref} target="_blank" rel="noopener noreferrer" className="interactive-glow flex items-center gap-3 rounded-2xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-teal-600">
-                  <Globe className="size-4" />
-                  {messages.common.visitWebsite}
-                </a>
-              ) : null}
-              {phone ? (
-                <a href={`tel:${resource.phone.replace(/[^\d+]/g, "")}`} className="flex items-center gap-3 rounded-2xl border border-[var(--border-strong)] bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white">
-                  <Phone className="size-4 text-teal-600" />
-                  {phone}
-                </a>
-              ) : null}
-              {resource.email ? (
-                <a href={`mailto:${resource.email}`} className="flex items-center gap-3 rounded-2xl border border-[var(--border-strong)] bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white">
-                  <Mail className="size-4 text-teal-600" />
-                  {resource.email}
-                </a>
-              ) : null}
-              {resource.address ? (
-                <a href={getDirectionsUrl(resource)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-2xl border border-[var(--border-strong)] bg-white/70 px-5 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-white">
-                  <Navigation className="size-4 text-teal-600" />
-                  {messages.common.getDirections}
-                </a>
-              ) : null}
-              {!siteHref && !phone && !resource.email && !resource.address ? (
-                <p className="text-sm leading-7 text-muted">{messages.common.unavailable}</p>
-              ) : null}
-            </div>
-            {location ? <p className="mt-4 text-sm leading-7 text-muted">{location}</p> : null}
-          </div>
-          <div className="glass-panel rounded-[30px] p-6">
-            <h2 className="text-2xl font-bold text-ink">{messages.common.whyThisMatters}</h2>
-            <p className="mt-4 text-sm leading-7 text-muted">
-              {messages.resourceDetail.whyThisMattersText}
-            </p>
-          </div>
-          <div className="glass-panel rounded-[30px] p-6">
-            <h2 className="text-2xl font-bold text-ink">{messages.common.relatedServices}</h2>
-            <div className="mt-4 space-y-3">
-              {related.map((item) => (
-                <Link key={item.id} href={`/resource/${item.id}`} className="block rounded-[24px] border border-[var(--border)] bg-white/60 p-4 transition hover:border-teal-200 hover:bg-white">
-                  <p className="font-bold text-ink">{item.name}</p>
-                  {formatLocation(item) ? <p className="mt-1 text-sm text-muted">{formatLocation(item)}</p> : null}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </aside>
+            {related.length ? (
+              <div className="rounded-[30px] border border-white/[0.14] bg-white/[0.055] p-6 backdrop-blur-xl">
+                <h2 className="text-2xl font-bold text-white">{messages.common.relatedServices}</h2>
+                <div className="mt-4 space-y-3">
+                  {related.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/resource/${item.id}`}
+                      className="block rounded-[24px] border border-white/12 bg-white/[0.05] p-4 transition hover:border-white/25 hover:bg-white/10"
+                    >
+                      <p className="font-bold text-white">{item.name}</p>
+                      {formatLocation(item) ? (
+                        <p className="mt-1 text-sm text-white/60">{formatLocation(item)}</p>
+                      ) : null}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </aside>
+        </div>
       </div>
     </div>
   );
 }
-

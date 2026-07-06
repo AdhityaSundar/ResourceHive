@@ -42,7 +42,7 @@ function Atmosphere() {
 
   return (
     <mesh scale={1.16} material={material}>
-      <sphereGeometry args={[1, 48, 48]} />
+      <sphereGeometry args={[1, 32, 32]} />
     </mesh>
   );
 }
@@ -110,8 +110,11 @@ export function GlobeCanvas(props: GlobeCanvasProps) {
   return (
     <Canvas
       camera={{ position: [0, 0, 3], fov: 42 }}
-      dpr={props.mode === "full" ? [1, 2] : [1, 1.3]}
-      gl={{ alpha: true, antialias: props.mode === "full" }}
+      // Cap DPR (retina screens rendered at 2x is the main lag source) and let
+      // r3f drop resolution adaptively when the frame rate dips.
+      dpr={props.mode === "full" ? [1, 1.6] : [1, 1.2]}
+      performance={{ min: 0.5 }}
+      gl={{ alpha: true, antialias: props.mode === "full", powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
     >
       <ambientLight intensity={0.65} />

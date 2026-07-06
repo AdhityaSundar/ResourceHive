@@ -234,6 +234,29 @@ h4 {
     inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+/* Colorful category card: a soft tint of the category's --accent over white —
+   vivid and distinct per category, yet light enough that ink/muted text stays
+   AA-compliant. Accent-tinted border + shadow carry the color further. */
+.card-hive {
+  position: relative;
+  background: linear-gradient(
+    157deg,
+    color-mix(in srgb, var(--accent, #8aa0b4) 15%, #ffffff) 0%,
+    color-mix(in srgb, var(--accent, #8aa0b4) 5%, #ffffff) 55%,
+    #ffffff 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--accent, #8aa0b4) 34%, transparent);
+  box-shadow:
+    0 14px 32px -10px color-mix(in srgb, var(--accent, #8aa0b4) 26%, rgba(38, 58, 80, 0.16)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.45s var(--ease-premium), box-shadow 0.45s var(--ease-premium);
+}
+.card-hive:hover {
+  box-shadow:
+    0 24px 50px -12px color-mix(in srgb, var(--accent, #8aa0b4) 42%, rgba(38, 58, 80, 0.22)),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
 .text-balance {
   text-wrap: balance;
 }
@@ -336,6 +359,24 @@ button {
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+}
+
+/* Lenis smooth scroll (see components/motion/smooth-scroll) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 select,

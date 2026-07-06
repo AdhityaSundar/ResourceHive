@@ -153,22 +153,26 @@ export function PreferencesClient({
         <p className="mt-4 max-w-2xl text-base leading-8 text-muted">{t.description}</p>
       </section>
 
-      {/* Favorites (hearted) */}
-      <section className="glass-panel rounded-[32px] bg-[linear-gradient(145deg,rgba(255,255,255,0.82),rgba(255,248,236,0.76))] p-6 sm:p-8">
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-honey-500 text-white shadow-[0_14px_28px_rgba(224,133,12,0.24)]">
+      {/* Favorites (hearted) — dark surface so the frosted glass cards read */}
+      <section className="relative overflow-hidden rounded-[32px] bg-teal-900 p-6 sm:p-8">
+        <div className="honeycomb-texture-dark pointer-events-none absolute inset-0 opacity-50" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_15%_0%,rgba(224,133,12,0.16),transparent_55%)]" />
+        <div className="relative flex items-center gap-3">
+          <span className="grid size-10 place-items-center rounded-2xl bg-honey-500 text-white shadow-[0_14px_28px_rgba(224,133,12,0.3)]">
             <Heart className="size-5 fill-white text-white" />
           </span>
-          <h2 className="text-2xl font-bold text-ink">{t.favoritesTitle}</h2>
+          <h2 className="text-2xl font-bold text-white">{t.favoritesTitle}</h2>
         </div>
         {favorites.length > 0 ? (
-          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="relative mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {favorites.map((resource) => (
               <ResourceCard key={resource.id} resource={resource} />
             ))}
           </div>
         ) : (
-          <p className="mt-5 rounded-3xl border border-honey-200 bg-honey-50/80 p-4 text-sm leading-7 text-honey-800">{t.favoritesEmpty}</p>
+          <p className="relative mt-5 rounded-3xl border border-white/12 bg-white/[0.05] p-4 text-sm leading-7 text-teal-50/80">
+            {t.favoritesEmpty}
+          </p>
         )}
       </section>
 

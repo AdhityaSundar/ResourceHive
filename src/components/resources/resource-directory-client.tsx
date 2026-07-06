@@ -122,7 +122,7 @@ export function ResourceDirectoryClient({
         resources={initialResources}
         options={result.filters}
       />
-      <div className="flex items-center justify-between text-sm text-muted">
+      <div className="flex items-center justify-between text-sm text-teal-50/70">
         <p>
           {result.total} {messages.resourcesPage.matched} Â· {result.counts.totalResources} {messages.resourcesPage.totalInDirectory}
         </p>
@@ -131,10 +131,10 @@ export function ResourceDirectoryClient({
             type="button"
             onClick={() => setView("grid")}
             aria-label={messages.common.viewGrid}
-            className={`interactive-glow rounded-full p-2 ${
+            className={`interactive-glow rounded-full p-2 transition ${
               view === "grid"
-                ? "bg-teal-100 text-teal-700"
-                : "bg-white/60 text-muted"
+                ? "bg-white/15 text-white"
+                : "bg-white/5 text-teal-50/55 hover:text-white"
             }`}
           >
             <Grid2X2 className="size-4" />
@@ -143,10 +143,10 @@ export function ResourceDirectoryClient({
             type="button"
             onClick={() => setView("list")}
             aria-label={messages.common.viewList}
-            className={`interactive-glow rounded-full p-2 ${
+            className={`interactive-glow rounded-full p-2 transition ${
               view === "list"
-                ? "bg-teal-100 text-teal-700"
-                : "bg-white/60 text-muted"
+                ? "bg-white/15 text-white"
+                : "bg-white/5 text-teal-50/55 hover:text-white"
             }`}
           >
             <List className="size-4" />
@@ -167,7 +167,7 @@ export function ResourceDirectoryClient({
           ))}
         </div>
       ) : (
-        <div className="glass-panel rounded-[30px] p-8 text-center text-muted">
+        <div className="rounded-[30px] border border-white/12 bg-white/[0.05] p-8 text-center text-teal-50/75 backdrop-blur">
           {messages.common.noResultsFound}
         </div>
       )}

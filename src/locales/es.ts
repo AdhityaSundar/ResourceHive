@@ -25,6 +25,7 @@ export const es = {
     footerDescription:
       "Conectamos comunidades con los recursos que necesitan mediante búsqueda moderna, descubrimiento por mapa y herramientas prácticas para familias, personas en búsqueda de empleo y equipos sin fines de lucro.",
     menuToggleAria: "Abrir o cerrar menú",
+    skipToContent: "Saltar al contenido",
     themeToggleAria: "Cambiar modo de color",
   },
   common: {

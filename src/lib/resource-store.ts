@@ -73,14 +73,44 @@ function scoreResource(resource: Resource, params: ResourceSearchParams) {
   return score;
 }
 
+// Round-robin across categories so each page leads with a diverse colour mix
+// rather than a single-category (single-colour) block. Deterministic + stable.
+function interleaveByCategory(items: Resource[]): Resource[] {
+  const groups = new Map<string, Resource[]>();
+  for (const resource of items) {
+    const group = groups.get(resource.category);
+    if (group) group.push(resource);
+    else groups.set(resource.category, [resource]);
+  }
+  const buckets = Array.from(groups.keys())
+    .sort()
+    .map((key) => groups.get(key)!.sort((a, b) => a.name.localeCompare(b.name)));
+  const maxLen = buckets.reduce((max, bucket) => Math.max(max, bucket.length), 0);
+  const result: Resource[] = [];
+  for (let i = 0; i < maxLen; i += 1) {
+    for (const bucket of buckets) {
+      if (i < bucket.length) result.push(bucket[i]);
+    }
+  }
+  return result;
+}
+
 export async function searchResources(params: ResourceSearchParams = {}): Promise<ResourceSearchResult> {
   const resources = await getResources();
   const page = Math.max(params.page ?? 1, 1);
   const pageSize = Math.min(Math.max(params.pageSize ?? 9, 1), 24);
 
-  const filtered = resources
-    .filter((resource) => matchesSearch(resource, params))
-    .sort((a, b) => scoreResource(b, params) - scoreResource(a, params) || a.name.localeCompare(b.name));
+  const matched = resources.filter((resource) => matchesSearch(resource, params));
+
+  // No active search/category/need filter → lead with a colourful category mix.
+  // A specific filter keeps relevance order (and a single category = its colour).
+  const hasFilter =
+    Boolean(params.query?.trim()) ||
+    Boolean(params.category?.trim()) ||
+    (params.needs?.length ?? 0) > 0;
+  const filtered = hasFilter
+    ? matched.sort((a, b) => scoreResource(b, params) - scoreResource(a, params) || a.name.localeCompare(b.name))
+    : interleaveByCategory(matched);
 
   const start = (page - 1) * pageSize;
   const items = filtered.slice(start, start + pageSize);

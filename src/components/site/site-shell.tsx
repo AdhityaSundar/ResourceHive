@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
-import { useState } from "react";
+import { motion, useReducedMotion, useScroll } from "framer-motion";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocale } from "@/components/providers/locale-provider";
 import { BrandMark } from "@/components/site/brand-mark";
-import { LanguageToggle } from "@/components/site/language-toggle";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,21 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const { user, isAdmin, logout } = useAuth();
   const mounted = useMounted();
   const pathname = usePathname();
+  const prefersReduced = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+
+  // Condense the header once the page has scrolled a little.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const underlineTransition = prefersReduced
+    ? { duration: 0 }
+    : { type: "spring" as const, stiffness: 380, damping: 32 };
 
   // Auth pages render full-screen without the site chrome (header/footer).
   if (pathname === "/login" || pathname === "/signup") {
@@ -40,11 +55,34 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-cream text-ink">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-teal-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-e3"
+      >
+        {messages.shell.skipToContent}
+      </a>
+      <motion.div
+        aria-hidden="true"
+        style={{ scaleX: scrollYProgress }}
+        className="fixed inset-x-0 top-0 z-50 h-[3px] origin-left bg-[linear-gradient(90deg,var(--honey-400),var(--teal-500))]"
+      />
       <div className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-70" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,_rgba(14,124,134,0.12),_transparent_52%)]" />
-      <header className="sticky top-0 z-40 border-b border-white/40 bg-white/55 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3">
+      <header
+        className={cn(
+          "sticky top-0 z-40 border-b ease-[cubic-bezier(0.22,1,0.36,1)] backdrop-blur-2xl transition-all duration-500",
+          scrolled
+            ? "border-[var(--border)] bg-white/80 shadow-e2"
+            : "border-white/40 bg-white/55",
+        )}
+      >
+        <div
+          className={cn(
+            "mx-auto flex max-w-7xl items-center justify-between px-4 ease-[cubic-bezier(0.22,1,0.36,1)] transition-all duration-500 sm:px-6 lg:px-8",
+            scrolled ? "py-2.5" : "py-4",
+          )}
+        >
+          <Link href="/" className="logo-hover flex items-center gap-3">
             <BrandMark className="size-10 sm:size-11" priority />
             <div>
               <div className="font-display text-lg font-bold tracking-tight text-ink">{messages.shell.brandName}</div>
@@ -52,28 +90,43 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-6 lg:flex">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-sm font-medium text-muted transition hover:text-teal-600">
-                {link.label}
-              </Link>
-            ))}
+          <nav className="hidden items-center gap-7 lg:flex">
+            {navLinks.map((link) => {
+              const active = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "relative py-1 text-sm font-medium transition-colors hover:text-teal-600",
+                    active ? "text-teal-700" : "text-muted",
+                  )}
+                >
+                  {link.label}
+                  {active ? (
+                    <motion.span
+                      layoutId="nav-underline"
+                      transition={underlineTransition}
+                      className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full bg-[linear-gradient(90deg,var(--teal-500),var(--honey-400))]"
+                    />
+                  ) : null}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden items-center gap-2 lg:flex">
             {mounted ? (
-              <>
-                <LanguageToggle />
-                {user ? (
-                  <Button variant="secondary" size="sm" onClick={() => logout()}>
-                    {messages.shell.signOut}
-                  </Button>
-                ) : (
-                  <Link href="/login">
-                    <Button size="sm">{messages.shell.demoLogin}</Button>
-                  </Link>
-                )}
-              </>
+              user ? (
+                <Button variant="secondary" size="sm" onClick={() => logout()}>
+                  {messages.shell.signOut}
+                </Button>
+              ) : (
+                <Link href="/login">
+                  <Button size="sm">{messages.shell.demoLogin}</Button>
+                </Link>
+              )
             ) : null}
           </div>
 
@@ -95,28 +148,23 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
             {mounted ? (
-              <>
-                <div className="mt-3 flex gap-2">
-                  <LanguageToggle />
-                </div>
-                {user ? (
-                  <Button size="sm" onClick={() => logout()}>
-                    {messages.shell.signOut}
+              user ? (
+                <Button size="sm" onClick={() => logout()}>
+                  {messages.shell.signOut}
+                </Button>
+              ) : (
+                <Link href="/login">
+                  <Button size="sm" className="w-full">
+                    {messages.shell.demoLogin}
                   </Button>
-                ) : (
-                  <Link href="/login">
-                    <Button size="sm" className="w-full">
-                      {messages.shell.demoLogin}
-                    </Button>
-                  </Link>
-                )}
-              </>
+                </Link>
+              )
             ) : null}
           </div>
         </div>
       </header>
 
-      <main className="relative">{children}</main>
+      <main id="main-content" className="relative">{children}</main>
 
       <footer className="relative border-t border-[var(--border)] bg-white/60">
         <div className="honeycomb-texture-light pointer-events-none absolute inset-0 opacity-50" />

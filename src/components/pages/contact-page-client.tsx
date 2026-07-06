@@ -131,6 +131,7 @@ export function ContactPageClient() {
             <div className="md:col-span-2">
               <textarea
                 name="message"
+                aria-label={messages.common.helpPrompt}
                 className="min-h-40 w-full rounded-[28px] border border-[var(--border)] bg-white/70 p-4 text-sm text-ink outline-none transition focus:border-teal-300 focus:ring-4 focus:ring-teal-200/50"
                 placeholder={messages.common.helpPrompt}
                 required
