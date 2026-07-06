@@ -24,7 +24,7 @@ export function isAdminUserId(id?: string | null): boolean {
 // This is NOT a security boundary (a user can spoof their email): every
 // privileged action is enforced server-side by isAdminUserId. If a non-admin
 // forces the link to appear, the server still returns 403 / redirects.
-const DEFAULT_ADMIN_EMAILS = "drvhall@crossroadsitg.com,adhityasundar@gmail.com";
+const DEFAULT_ADMIN_EMAILS = "drvhall@crossroadsitg.com,drvhall1@gmail.com,adhityasundar@gmail.com";
 
 export const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? DEFAULT_ADMIN_EMAILS)
   .split(",")
